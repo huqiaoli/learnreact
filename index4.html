@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<title>JSX属性和嵌套</title>
+	<title>JSX属性/嵌套/对象</title>
 	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
 	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
 	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
@@ -13,10 +13,16 @@
 
 	<div id="root"></div>
 	<script type="text/babel">
-	// 用引号形式
+	// 用引号形式，这里的”0”是一个字符串字面量
 	const element=<div tabIndex='0'></div>
 	// 用表达式，并且表达式用花括号包裹
 	const elementImg=<img src='user.avatarUrl'/>
+
+	//JSX表示对象，JSX 语法的解析规则是：遇到 XML 标签 <...>，以 XML 规则解析；遇到代码块 {...}，就用 js 规则解析；
+    //在JSX中，XML可以理解为是创建虚拟DOM对象的字面量写法；在编译之后呢，XML标签 会被转化为 React.createElement() 函数的调用；
+	//上面的代码将编译为
+	const elementImg=React.createElement('img',{src:user.avatarUrl})
+
 	//JSX 标签同样可以相互嵌套
 	const elementChild=(
 		<div>
@@ -24,6 +30,7 @@
 			<h2>Good to see you here.</h2>
 		</div>
 	)
+
 	</script>
 
 </body>
