@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<title>在 JSX 中使用表达式</title>
+	<title>JSX 本身其实也是一种表达式</title>
 	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
 	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
 	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
@@ -16,14 +16,20 @@
 	function formatName(user){
 		return user.firstName+ ' ' +user.lastName
 	}
+	//从底层上讲，JSX编译后会变成js函数调用或js对象。因此，允许在if语句、loop语句、赋值语句中使用JSX，甚至可以将它们作为参数、函数返回值使用。
+	function getGreeting(user){
+		if(user){
+			return <h1>hello,{formatName(user)}</h1>
+		}else{
+			return <h1>hello,stranger</h1>
+		}
+	}
 	const user={
 		firstName:'Harper',
 		lastName:'Perez'
 	}
-	//JSX 结构中使用花括号{}插入表达式
-	//如果 JSX 中的XML带有换行，则推荐，有XML的外面加上一个小括号，这样可以防止分号自动插入的bug；
 	const element=(
-		<h1>hello,{formatName(user)}</h1>
+		<div>{getGreeting(user)}</div>
 	)
 	ReactDOM.render(
 		element,

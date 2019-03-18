@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<title>在 JSX 中使用表达式</title>
+	<title>if语句以及for循环不能直接作为表达式写在{}中赋值给一个变量</title>
 	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
 	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
 	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
@@ -13,17 +13,21 @@
 
 	<div id="root"></div>
 	<script type="text/babel">
-	function formatName(user){
-		return user.firstName+ ' ' +user.lastName
+	//if语句以及for循环不是js表达式，不能直接作为表达式 写在{}中， 但可以先将其赋值给一个变量
+	function numberDescriber(props){
+		let description;
+		if(props.number % 2 == 0){
+			description=<strong>even</strong>
+		}else{
+			description=<i>odd</i>
+		}
+		return <div>{props.number} is an {description} number</div>
 	}
-	const user={
-		firstName:'Harper',
-		lastName:'Perez'
+	const props={
+		number:'10'
 	}
-	//JSX 结构中使用花括号{}插入表达式
-	//如果 JSX 中的XML带有换行，则推荐，有XML的外面加上一个小括号，这样可以防止分号自动插入的bug；
 	const element=(
-		<h1>hello,{formatName(user)}</h1>
+		<div>{numberDescriber(props)}</div>
 	)
 	ReactDOM.render(
 		element,
