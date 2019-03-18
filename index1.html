@@ -20,6 +20,8 @@
 		firstName:'Harper',
 		lastName:'Perez'
 	}
+	//jsx 结构中使用花括号{}插入表达式
+	//如果 JSX 中的XML带有换行，则推荐，有XML的外面加上一个小括号，这样可以防止分号自动插入的bug；
 	const element=(
 		<h1>hello,{formatName(user)}</h1>
 	)
