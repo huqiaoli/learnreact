@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>JSX属性和嵌套</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+	<div id="root"></div>
+	<script type="text/babel">
+	// 用引号形式
+	const element=<div tabIndex='0'></div>
+	// 用表达式，并且表达式用花括号包裹
+	const elementImg=<img src='user.avatarUrl'/>
+	//JSX 标签同样可以相互嵌套
+	const elementChild=(
+		<div>
+			<h1>Hello!</h1>
+			<h2>Good to see you here.</h2>
+		</div>
+	)
+	</script>
+
+</body>
+
+</html>
