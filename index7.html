@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>函数定义/类定义组件/组件渲染</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+	<div id="root"></div>
+	<script type="text/babel">
+	//定义一个组件最简单的方式是使用JavaScript函数
+		// function Welcome(props){
+		// 	return <h1>hello,{props.name}</h1>
+		// }
+	//用 ES6 class 来定义一个组件
+		class Welcome extends React.Component{
+			render(){
+				return <h1>hello,{this.props.name}</h1>//3.Welcome组件将<h1>Hello, Sara</h1>元素作为结果返回
+			}
+		}
+		//React元素也可以是用户自定义的组件
+		const element=<Welcome name='Sara'/>//2.React将{name: 'Sara'}作为props传入并调用Welcome组件
+		ReactDOM.render(//4.React DOM将DOM更新为<h1>Hello, Sara</h1>
+			element,//1.对<Welcome name="Sara" />元素调用了ReactDOM.render()方法
+			document.getElementById('root')
+		)
+	</script>
+
+</body>
+
+</html>
