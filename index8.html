@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>组合组件</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+	<div id="root"></div>
+	<div id="example"></div>
+	<script type="text/babel">
+	function Welcome(props){
+		return <h1>hello,{props.name}</h1>
+	}
+	function Name(props){
+		return <h2>name:{props.name}</h2>
+	}
+	function Url(props){
+		return <h3>url:{props.url}</h3>
+	}
+	function Nickname(props){
+		return <h4>nickname:{props.nickname}</h4>
+	}
+	function App(){
+		return(
+			<div>
+				<Welcome name='Sara' />
+				<Welcome name='Cahal' />
+      			<Welcome name='Edite' />
+				<Name name='react' />
+				<Url url='https://react.docschina.org/' />
+				<Nickname nickname='react中文网' />
+			</div>
+		)
+	}
+	ReactDOM.render(
+		<App />,
+		document.getElementById('root')
+	)
+
+
+	const ProfilePic = (props) => {
+		return <img src={'http://placekitten.com/g/64/' + props.username} />
+		
+	}
+	const ProfileLink = (props) => {
+		return(
+			<a herf={'http://placekitten.com/g/64/' + props.username} >
+				{props.username}
+			</a>
+		)
+	}
+	const Avatar = (props) => {
+		return(
+			<div>
+				<ProfilePic username={props.username} />
+				<ProfileLink username={props.username} />
+			</div>
+		)
+	}
+	ReactDOM.render(
+		<Avatar username='64' />,
+		document.getElementById('example')
+	)
+	</script>
+
+</body>
+
+</html>
