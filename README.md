@@ -29,4 +29,18 @@ ReactDom.render接受两个参数，第一个是要被插入的内容，第二�
     ```
     const element = <Welcome name="Sara" />;
     ```
+## 4.状态state
+- 构造函数是唯一能够初始化 this.state 的地方；
+- 直接更新状态不会重新渲染组件，如：
+```
+this.state.comment = 'Hello';
+```
+应当使用 setState()设置状态，如：
+```
+this.setState({comment: 'Hello'});
+```
+#### Props和State
 
+- Props是组件实例的标签属性的集合；它可以接收组件外传进来的值，在组件内部是不可修改Props的属性的，在组件外部可以通过标签属性给它赋值，所以可以用来从组件外部给组件内部传值；
+- State是组件实例的内部数据的集合；在组件内部是可以更改State的属性的值，且每次更改后，都会触发render方法渲染组件；
+- 组件的标签属性在使用前不用先定义；而组件的内部数据State的属性在使用前需要先通过getInitialState方法定义；
