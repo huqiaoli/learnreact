@@ -17,15 +17,16 @@ ReactDom.render接受两个参数，第一个是要被插入的内容，第二�
 - 当React遇到的元素是用户自定义的组件，它会将JSX属性作为单个对象传递给该组件，这个对象称之为“props”
 - 组件的返回值只能有一个根元素
 - 无论是使用函数或是类来声明一个组件，它决不能修改它自己的props
-#### 组件渲染
-###### React元素是DOM标签
+    #### 组件渲染
+    ###### React元素是DOM标签
+    
+    ```
+    const element = <div />;
+    ```
+    
+    React元素也可以是用户自定义的组件
+    
+    ```
+    const element = <Welcome name="Sara" />;
+    ```
 
-```
-const element = <div />;
-```
-
-React元素也可以是用户自定义的组件
-
-```
-const element = <Welcome name="Sara" />;
-```
