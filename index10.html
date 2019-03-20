@@ -85,17 +85,20 @@
 	//同样，每当Clock生成的这个DOM被移除的时候，我们也会想要清除定时器，这在React中被称为卸载。
 	//可以在组件类上声明特殊的方法，当组件挂载或卸载时，来运行一些代码：
 	class Clock extends React.Component{
-		constructor(props){
+		// 类 构造函数 初始化 this.state
+		constructor(props){ // ES6中类的constructor函数可以通过super访问其父类的构造函数,如果不加这句，this.props 将在 constructor(构造函数) 中是 undefined(未定义)
 			super(props);
 			this.state = {date:new Date()};
-		}
+		}// 注意，ES6中类的方法之间不需要任何符号
 		
+		//挂载:第一次渲染render 到DOM后，调用它
 		componentDidMount(){
 			this.timerID = setInterval(
 				() => this.tick(),
 				1000
 			)
 		}
+		//卸载:产生的 DOM 被销毁时，调用它
 		componentWillUnmount(){
 			clearInterval(this.timerID)
 		}
@@ -114,7 +117,7 @@
 		}
 	}
 	ReactDOM.render(
-		<Clock />,
+		<Clock />,// 外部不再干涉Clock组件的刷新功能
 		document.getElementById('root')
 	)
 	</script>
