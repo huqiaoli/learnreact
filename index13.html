@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<title>State 和 Props</title>
+	<title>默认 Props</title>
 	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
 	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
 	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
@@ -13,41 +13,20 @@
 
 	<div id="root"></div>
 	<script type="text/babel">
-	//在应用中组合使用 state 和 props
-	//可以在父组件中设置 state， 并通过在子组件上使用 props 将其传递到子组件上。在 render 函数中, 我们设置 name 和 site 来获取父组件传递过来的数据
-	class WebSite extends React.Component{
-		constructor(){
-			super();
-			this.state = {
-				name:'react',
-				site:'https://react.docschina.org'
-			}
-		}
+	//通过组件类的 defaultProps 属性为 props 设置默认值
+	class HelloMessage extends React.Component{
 		render(){
 			return(
-				<div>
-					<Name title={this.state.name} />{/*将this.state.name以title名称传给Name组件，Name通过this.props.title来使用其值*/}
-					<Link site={this.state.site} />
-				</div>
+				<h1>hello,{this.props.name}</h1>
 			)
 		}
 	}
-	class Name extends React.Component{
-		render(){
-			return(
-				<h1>{this.props.title}</h1>//Name通过this.props.title来使用其值
-			)
-		}
+	HelloMessage.defaultProps={
+		name: 'Runoob'
 	}
-	class Link extends React.Component{
-		render(){
-			return(
-				<a href={this.props.site}>{this.props.site}</a>
-			)
-		}
-	}
+	const element=<HelloMessage />
 	ReactDOM.render(
-		<WebSite />,
+		element,
 		document.getElementById('root')
 	)
 	</script>
