@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>条件渲染</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+	<div id="root"></div>
+	<script type="text/babel">
+	function UserGeeting(props){
+		return <h1>Welcome back!</h1>
+	}
+	function GuestGeeting(props){
+		return <h1>Please sign up</h1>
+	}
+	function Greeting(props){
+		const isLoggedIn=props.isLoggedIn
+		if(isLoggedIn){
+			return <UserGeeting />
+		}else{
+			return <GuestGeeting />
+		}
+	}
+	ReactDOM.render(
+		<Greeting isLoggedIn={true}/>,
+		document.getElementById('root')
+	)
+	</script>
+
+</body>
+
+</html>
