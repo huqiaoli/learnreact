@@ -95,4 +95,9 @@ this.handleClick = this.handleClick.bind(this);
   You {text} this. Click to toggle.
 </div>
 ```
+#### React 点击事件的 bind(this) 传参
+
+事件：**this.handleclick.bind(this，要传的参数)**
+
+函数：**handleclick(传过来的参数，event)**
 
