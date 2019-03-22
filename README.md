@@ -60,3 +60,44 @@ this.setState({comment: 'Hello'});
 - Props是组件实例的标签属性的集合；它可以接收组件外传进来的值，在组件内部是不可修改Props的属性的，在组件外部可以通过标签属性给它赋值，所以可以用来从组件外部给组件内部传值；
 - State是组件实例的内部数据的集合；在组件内部是可以更改State的属性的值，且每次更改后，都会触发render方法渲染组件；
 - 组件的标签属性在使用前不用先定义；而组件的内部数据State的属性在使用前需要先通过getInitialState方法定义；
+## 6.事件处理
+- React事件绑定属性的命名采用驼峰式写法，而不是小写。
+- 如果采用 JSX 的语法，则需要传入一个函数作为事件处理函数，而不是一个字符串(DOM元素的写法)；
+- 不能使用返回 false 的方式阻止默认行为，必须明确的使用 preventDefault 来阻止默认行为；
+- 当你使用 ES6 class 语法来定义一个组件的时候，事件处理器会成为类的一个方法,类的方法默认是不会绑定 this 的,例如 
+ 
+```
+onClick={this.handleClick}
+```
+
+你应该为这个方法绑定 this,
+
+**使用 bind() 函数改变 this 的上下文**
+
+可以在class声明中的constructor()函数中，使用
+
+```
+this.handleClick = this.handleClick.bind(this);
+```
+也可以在具体使用该函数的地方绑定this的上下文
+
+```
+<div onClick={this.handleClick.bind(this)}>
+  You {text} this. Click to toggle.
+</div>
+```
+
+
+**使用es6的箭头函数**
+
+```
+<div onClick={() => this.handleClick()}>
+  You {text} this. Click to toggle.
+</div>
+```
+#### React 点击事件的 bind(this) 传参
+
+事件：**this.handleclick.bind(this，要传的参数)**
+
+函数：**handleclick(传过来的参数，event)**
+
