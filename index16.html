@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>事件处理</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+	<div id="root"></div>
+	<script type="text/babel">
+	//与 11 组件生命周期 同
+	class Toggle extends React.Component{
+		constructor(props){
+			super(props);
+			this.state = {isToggleOn:true};
+			// 这边绑定是必要的，这样 `this` 才能在回调函数中使用
+			this.handleClick = this.handleClick.bind(this);
+		}
+		handleClick(){
+			//给 setState() 传了一个函数而不是一个对象,该函数将接收先前的状态作为第一个参数,使用了箭头函数
+			//当你调用 setState(参数对象) 时，参数对象中的属性会完全替换掉this.state中相应的属性(对比 11 组件生命周期)
+			this.setState(prevState => ({
+				isToggleOn:!prevState.isToggleOn
+			}))
+		}
+		render(){
+			return(
+				<button onClick={this.handleClick}>
+					{this.state.isToggleOn ? 'on' : 'off'}
+				</button>
+			)
+		}
+	}
+	
+	ReactDOM.render(
+		<Toggle />,
+		document.getElementById('root')
+	)
+	</script>
+
+</body>
+
+</html>
