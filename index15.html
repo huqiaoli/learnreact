@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>父子组件间通信</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+	<div id="root"></div>
+	<script type="text/babel">
+	//通过 props 属性传递，在父组件给子组件设置 props，然后子组件就可以通过 props 访问到父组件的数据／方法，这样就搭建起了父子组件间通信的桥梁
+	class GroceryList extends React.Component{
+		handleClick(i){
+			console.log('You clicked' + this.props.items[i])
+		}
+		render(){
+			return(
+				<div>
+				{
+					this.props.items.map((item,i) => {
+						return(
+							<div onClick={this.handleClick.bind(this,i)} key={i}>{item}</div>
+						)
+					})
+				}
+				</div>
+			)
+		}
+	}
+	ReactDOM.render(
+		<GroceryList items={['Apple', 'Banana', 'Cranberry']} />,
+		document.getElementById('root')
+	)
+	</script>
+
+</body>
+
+</html>
