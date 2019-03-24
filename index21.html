@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>三目运算符</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+	<div id="root"></div>
+	<script type="text/babel">
+	class App extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      isLoggedIn:false
+    };
+  }
+  handle = () => {
+    this.setState(prevState => ({
+      isLoggedIn: !prevState.isLoggedIn
+    }));
+  }
+  render(){  
+    let isLoggedIn = this.state.isLoggedIn;
+    return (<div>
+        <Greeting isLoggedIn={isLoggedIn} name={this.props.name}/>
+        <button onClick={this.handle}>
+          {isLoggedIn ? '退出登录' : '登录'}
+        </button>
+      </div>
+    );
+  }
+}
+class Greeting extends React.Component{
+     render(){
+        let {name,isLoggedIn} = {...this.props};
+        let text = isLoggedIn ? ('welcome you ,' + name + '!') 
+                              : 'please login!';
+        return (
+            <div>
+               {text}
+            </div>
+        );
+    }
+}
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+)
+	</script>
+
+</body>
+
+</html>
