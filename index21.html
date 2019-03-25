@@ -12,46 +12,64 @@
 <body>
 
 	<div id="root"></div>
-	<script type="text/babel">
-	class App extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      isLoggedIn:false
-    };
-  }
-  handle = () => {
-    this.setState(prevState => ({
-      isLoggedIn: !prevState.isLoggedIn
-    }));
-  }
-  render(){  
-    let isLoggedIn = this.state.isLoggedIn;
-    return (<div>
-        <Greeting isLoggedIn={isLoggedIn} name={this.props.name}/>
-        <button onClick={this.handle}>
-          {isLoggedIn ? '退出登录' : '登录'}
-        </button>
-      </div>
-    );
-  }
-}
-class Greeting extends React.Component{
-     render(){
-        let {name,isLoggedIn} = {...this.props};
-        let text = isLoggedIn ? ('welcome you ,' + name + '!') 
-                              : 'please login!';
-        return (
-            <div>
-               {text}
-            </div>
-        );
+  <script type="text/babel">
+  class ShowNumber extends React.Component{
+    constructor(props){
+      super(props);
+      this.state = {isShow:true}
     }
-}
-ReactDOM.render(
-  <App />,
-  document.getElementById('root')
-)
+    render(){
+      return (
+            <h1>
+                hello world!
+                { this.state.isShow ? <span>123</span>:<span>456</span> }
+            </h1>
+        )
+
+    }
+  }
+  ReactDOM.render(
+    <ShowNumber />,
+    document.getElementById('root')
+  )
+  // class Hello extends React.Component{
+  //   constructor(props){
+	// 		super(props);
+  //     this.state = {like:true};
+  //     this.click = this.click.bind(this)
+  //   } 
+  //   click(){
+  //     this.setState({
+  //       like: !this.state.like
+  //     })
+  //   }
+  //   render(){
+  //     return(
+  //       <h1>
+  //         hello,world
+  //         {this.state.like ? <span>I like you!</span> : <span>I dislike you!</span>}
+  //         <button onClick={this.click}>change</button>
+  //       </h1>
+  //     )
+  //   }
+  // }
+  // ReactDOM.render(
+  //   <Hello />,
+  //   document.getElementById('root')
+  // )
+	// function ThirdOperator(props){
+  //   var f = props.fruit;
+  //   // 三元运算符
+  //   return(
+  //     <h1>
+  //       {f == 'orange' ? '橘子' : '其他'}
+  //     </h1>
+  //   ) 
+  // }
+  // ReactDOM.render(
+  //   <ThirdOperator fruit='orange' />,
+  //   document.getElementById('root')
+  // )
 	</script>
 
 </body>
