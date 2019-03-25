@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<title>条件渲染</title>
+	<title>与运算符 &&</title>
 	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
 	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
 	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
@@ -13,25 +13,27 @@
 
 	<div id="root"></div>
 	<script type="text/babel">
-	function Mailbox(props) {
-  const unreadMessages = props.unreadMessages;
-  return (
-    <div>
-      <h1>Hello!</h1>
-      {unreadMessages.length > 0 &&
-        <h2>
-          You have {unreadMessages.length} unread messages.
-        </h2>
-      }
-    </div>
-  );
-}
-
-const messages = ['React', 'Re: React', 'Re:Re: React'];
-ReactDOM.render(
-  <Mailbox unreadMessages={messages} />,
-  document.getElementById('root')
-);
+	function Mailbox(props){
+    const unreadMessages = props.unreadMessages
+    return(
+      <div>
+        <h1>hello</h1>
+        {/*可以 在JSX中嵌入任何表达式 ，方法是将表达式包裹在 {} 中*/}
+        {unreadMessages.length > 0 &&
+          <h2>
+            you have {unreadMessages.length} unread message.
+          </h2>
+        }
+      </div>
+    )
+  }
+  const messages = ['react','re:react','re:re:react']
+  ReactDOM.render(
+    <Mailbox unreadMessages={messages} />,
+    document.getElementById('root')
+  )
+  //在 js 中，true && expression 总是返回 expression，而 false && expression 总是返回 false。
+  //因此，如果条件是 true，&& 右侧的元素就会被渲染，如果是 false，React 会忽略并跳过它。
 	</script>
 
 </body>
