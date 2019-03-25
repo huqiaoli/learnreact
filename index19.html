@@ -43,12 +43,15 @@
 			)
 		}
 	}
+	//定义基础组件
 	function UserGreeting(props){
 		return <h1>welcome back</h1>
 	}
 	function GuesGreeting(props){
 		return <h1>please sign up</h1>
 	}
+	
+	//进行选择
 	function Greeting(props){
 		const isLoggedIn = props.isLoggedIn;
 		if(isLoggedIn){
