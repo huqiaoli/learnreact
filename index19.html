@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<title>条件渲染</title>
+	<title>元素变量</title>
 	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
 	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
 	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
@@ -13,12 +13,13 @@
 
 	<div id="root"></div>
 	<script type="text/babel">
+	//声明变量并使用 if 语句是条件渲染组件
 	class LoginControl extends React.Component{
 		constructor(props){
 			super(props);
 			this.handleLoginClick = this.handleLoginClick.bind(this);
 			this.handleLogoutClick = this.handleLogoutClick.bind(this);
-			this.state = {isLoggedIn:false}
+			this.state = {isLoggedIn:false}//在类构造函数中初始化本地状态
 		}
 		handleLoginClick(){
 			this.setState({isLoggedIn:true});
@@ -28,7 +29,7 @@
 		}
 		render() {
 			const isLoggedIn = this.state.isLoggedIn;
-			let button;
+			let button;//button 为元素变量
 			if(isLoggedIn){
 				button = <LogoutButton onClick={this.handleLogoutClick} />;
 			}else{
