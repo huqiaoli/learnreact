@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>实现红桃、黑桃、梅花、方块不断地循环切换的效果，类似图片轮播</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+	<div id="root"></div>
+  <script type="text/babel">
+  //1、基础组件创建（按钮，文本）
+  //2、组件进行有组织选择 这里关键就是对suit除4取模运算，所以它会的值会0、1、2、3变化，每点击一次加一
+  //3、渲染部分
+  function Heart(props){
+    return(
+      <button onClick={props.onClick}>红桃</button>
+    )
+  }
+  function HeartA(){
+    return(
+      <h1>红桃A</h1>
+    )
+  }
+  function Spade(props){
+    return(
+      <button onClick={props.onClick}>黑桃</button>
+    )
+  }
+  function SpadeA(){
+    return(
+      <h1>黑桃A</h1>
+    )
+  }
+  function Club(props){
+    return(
+      <button onClick={props.onClick}>梅花</button>
+    )
+  }
+  function ClubA(){
+    return(
+      <h1>梅花A</h1>
+    )
+  }
+  function Diamond(props){
+    return(
+      <button onClick={props.onClick}>方块</button>
+    )
+  }
+  function DiamondA(){
+    return(
+      <h1>方块A</h1>
+    )
+  }
+  class Proke extends React.Component{
+    constructor(props){
+      super(props);
+      this.state = {suit:1}
+      this.handleHeart = this.handleHeart.bind(this)
+      this.handleSpade = this.handleSpade.bind(this)
+      this.handleClub = this.handleClub.bind(this)
+      this.handleDiamond = this.handleDiamond.bind(this)
+    }
+    handleHeart(){
+      this.setState({suit:(this.state.suit+1)})
+    }
+    handleSpade(){
+      this.setState({suit:(this.state.suit+1)})
+    }
+    handleClub(){
+      this.setState({suit:(this.state.suit+1)})
+    }
+    handleDiamond(){
+      this.setState({suit:(this.state.suit+1)})
+    }
+    render(){
+      const suits = this.state.suit;
+      let button = null;
+      let element =null;
+      if(1 == (suits % 4)){
+        button = <Heart onClick={this.handleHeart} />;
+        element = <HeartA />;
+      }else if(2 == (suits %4)){
+        button = <Spade onClick={this.handleSpade} />;
+        element = <SpadeA />;
+      }else if(3 == (suits %4)){
+        button = <Club onClick={this.handleClub} />;
+        element = <ClubA />;
+      }else{
+        button = <Diamond onClick={this.handleDiamond} />;
+        element = <DiamondA />;
+      }
+      console.log(suits);
+      return(
+        <div>
+         {element}
+         {button}
+        </div>
+      )
+    }
+  }
+  ReactDOM.render(
+    <Proke />,
+    document.getElementById('root')
+  )
+	</script>
+
+</body>
+
+</html>
