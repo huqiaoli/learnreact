@@ -101,3 +101,31 @@ this.handleClick = this.handleClick.bind(this);
 
 函数：**handleclick(传过来的参数，event)**
 
+## 7.条件渲染
+###### 通过条件渲染页面：
+
+首先建一个函数，来根据不同的情况返回不同的值，然后建一个类组建，先进行变量的初始化，对变量进行操作，在组件内进行小的渲染，最后通过 ReactDOM.render() 渲染到页面上。
+
+###### 为什么要进行变量的初始化？
+
+一个软件所分配到的空间中极可能存在着以前其他软件使用过后的残留数据，这些数据被称之为垃圾数据。所以通常情况下我们为一个变量，为一个数组，分配好存储空间之后都要对该内存空间初始化。
+
+简单来说就是清理残留数据。
+
+
+##### prevState 如何传递？
+```
+handleToggleClick(){    
+  this.setState(prevState=>({ // 这里 prevState 
+      showWarning:!prevState.showWarning 
+    })
+  );
+}
+```
+setState() 可以接收一个函数，这个函数接受两个参数，第一个参数表示上一个状态值，第二参数表示当前的 props：
+
+```
+this.setState((prevState, props) => ({
+    //do something here
+}));
+```
