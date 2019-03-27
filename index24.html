@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<title>渲染多个组件</title>
+	<title>列表 & Keys</title>
 	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
 	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
 	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
@@ -13,6 +13,7 @@
 
 	<div id="root"></div>
   <script type="text/babel">
+  //渲染多个组件
   // const numbers = [1,2,3,4,5]
   // const listItems = numbers.map((number) => 
   //   <li>{number}</li>
@@ -21,17 +22,38 @@
   //   <ul>{listItems}</ul>,
   //   document.getElementById('root')
   // )
+
+  //基础列表组件
+  // function NumberList(props){
+  //   const numbers = props.numbers
+  //   const listItems = numbers.map((number) => 
+  //     <li key={number.toString()}>{number}</li>
+  //   );
+  //   return(
+  //     <ul>{listItems}</ul>
+  //   );
+    
+  // }
+  // const numbers = [1,2,3,4,5]
+  // ReactDOM.render(
+  //   <NumberList numbers={numbers} />,
+  //   document.getElementById('root')
+  // )
+
+  //用keys提取组件
+  function ListItem(props){
+    return <li>{props.value}</li>
+  }
   function NumberList(props){
-    const numbers = props.numbers
+    const numbers = props.numbers;
     const listItems = numbers.map((number) => 
-      <li key={number.toString()}>{number}</li>
+      <ListItem key={number.toString()} value={number} />
     );
     return(
-      <ul>{listItems}</ul>
+     <ul> {listItems}</ul>
     );
-    
   }
-  const numbers = [1,2,3,4,5]
+  const numbers = [1,2,3,4,5];
   ReactDOM.render(
     <NumberList numbers={numbers} />,
     document.getElementById('root')
