@@ -129,3 +129,11 @@ this.setState((prevState, props) => ({
     //do something here
 }));
 ```
+##  8.key
+###### key的使用需要注意一下几点：
+- 数组中的每一项都要有固定的key，以便React区分哪些元素变化(增加/修改/移除),它只是作为React自己识别，并不会传递到组件上
+- 一个array创建的elements列表中，item的key应该是独一无二的。
+- 注意：react根据keys判断列表的items（项）是否改增删改
+- 只能在数组内指定key：元素位于map()方法内时需要设置键属性,准确地说，只能在map()的回调函数中使用key
+- key需要在列表范围内保证唯一性：同一个数组中的key需要保证唯一性，但不同数组中的key无所谓
+- key不会作为props传入组件：可以认为key是React在JSX中的保留字，你不能用它来向组件传递数据而应该改用其他词
