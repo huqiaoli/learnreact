@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>表单受控组件</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+	<div id="root"></div>
+  <script type="text/babel">
+  //运行逻辑：首先将组建渲染到页面，及执行了render(),此时获取的value为空，当我们输入数据时，触发handleChange函数（注意：要提前绑定在当前环境下），然后设置state中的value为用户当前输入值，于是表单元素input获取到最新的state并使用虚拟dom与真实dom作对比，只更新有变化的dom...  当点击提交按钮时，触发了handleSubmit函数。
+　//值得注意的是：在handleSubmit函数中，我们使用event.preventDefault()阻止了默认行为，即：提交表单后，不会自动reset表单，而是保留之前的用户数据！
+  //input标签：通过 event.target.value 读取用户输入的值。textarea 元素、select元素、radio元素都属于这种情况
+  // class NameForm extends React.Component{
+  //   constructor(props){
+  //     super(props)
+  //     this.state = {value:''}
+  //     this.handleChange = this.handleChange.bind(this)
+  //     this.handleSubmit = this.handleSubmit.bind(this)
+  //   }
+  //   handleChange(event){
+  //     this.setState({value:event.target.value})
+  //   }
+  //   handleSubmit(event){
+  //     alert('A name was submitted: ' + this.state.value);
+  //     event.preventDefault();
+  //   }
+  //   render(){
+  //     return(
+  //       <form onSubmit={this.handleSubmit}>
+  //         <label>
+  //           Name:
+  //           <input type="text" value={this.state.value} onChange={this.handleChange} />
+  //         </label>
+  //         <input type="submit" value="submit" />
+  //       </form>
+  //     );
+  //   }
+  // }
+  // ReactDOM.render(
+  //   <NameForm />,
+  //   document.getElementById('root')
+  // )
+
+  //textarea标签：注意this.state.value是在构造函数中初始化，这样文本区域就能获取到其中的文本
+  // class EssayForm extends React.Component{
+  //   constructor(props){
+  //     super(props)
+  //     this.state = {value:'Please write an essay about your favorite DOM element.'}
+  //     this.handleChange = this.handleChange.bind(this)
+  //     this.handleSubmit = this.handleSubmit.bind(this)
+  //   }
+  //   handleChange(event){
+  //     this.setState({value:event.target.value})
+  //   }
+  //   handleSubmit(event){
+  //     alert('An essay was submitted: ' + this.state.value);
+  //     event.preventDefault();
+  //   }
+  //   render(){
+  //     return(
+  //       <form onSubmit={this.handleSubmit}>
+  //         <label>
+  //           Name:
+  //           <textarea value={this.state.value} onChange={this.handleChange}></textarea>
+  //         </label>
+  //         <input type="submit" value="submit" />
+  //       </form>
+  //     )
+  //   }
+  // }
+  // ReactDOM.render(
+  //   <EssayForm />,
+  //   document.getElementById('root')
+  // )
+
+  
+  //select标签：在React中，并不使用之前的selected属性，而在根select标签上用value属性来表示选中项
+  class FlovarForm extends React.Component{
+    constructor(props){
+      super(props);
+      this.state = {value:'coconut'};
+      this.handleChange = this.handleChange.bind(this)
+      this.handleSubmit = this.handleSubmit.bind(this)
+    }
+    handleChange(event){
+      this.setState({value:event.target.value})
+    }
+    handleSubmit(event){
+      alert('Your favorite flavor is: ' + this.state.value)
+      event.preventDefault()
+    }
+    render(){
+      return(
+        <form onSubmit={this.handleSubmit}>
+          <label>
+            Pick your favorite La Croix flavor:
+            <select value={this.state.value} onChange={this.handleChange}>
+              <option value="grapefruit">Grapefruit</option>
+              <option value="lime">Lime</option>
+              <option value="coconut">Coconut</option>
+              <option value="mango">Mango</option>
+            </select>
+          </label>
+          <input type="submit" submit="submit" />
+        </form>
+      )
+    }
+  }
+  ReactDOM.render(
+    <FlovarForm />,
+    document.getElementById('root')
+  )
+  
+	</script>
+
+</body>
+
+</html>
