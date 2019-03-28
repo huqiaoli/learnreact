@@ -217,3 +217,9 @@ this.setState((prevState, props) => ({
 - 只能在数组内指定key：元素位于map()方法内时需要设置键属性,准确地说，只能在map()的回调函数中使用key
 - key需要在列表范围内保证唯一性：同一个数组中的key需要保证唯一性，但不同数组中的key无所谓
 - key不会作为props传入组件：可以认为key是React在JSX中的保留字，你不能用它来向组件传递数据而应该改用其他词
+
+## 9.表单
+
+- 对于 textarea 元素，在HTML当中，是通过子节点（开关标签之间的内容）来定义它的文本内容的，而在React中，是通过 标签属性value来设置它的文本内容的；
+- 对于 select 标签，在HTML中，是通过在设置它的选项option元素的标签属性selected来设置被选中的选项的；而在React中，是通过设置 select 元素的标签属性 value 来设置被选中的值的；
+- 通过给表单元素设置标签属性 defaultValue 可以为其指定初始值；
