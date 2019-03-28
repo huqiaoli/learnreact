@@ -45,6 +45,18 @@ ReactDOM.render(
     ```
     const element = <Welcome name="Sara" />;
     ```
+    ###### 组件
+注意：
+
+1、所有组件类都必须有自己的 render 方法，用于输出组件；
+
+2、组件类的第一个字母必须大写；
+	  
+3、组件类只能包含一个顶层标签；
+	  
+4、组件的属性可以在组件类的 this.props 对象上获取，比如 name 属性就可以通过 this.props.name 读取；
+	  
+5、添加组件属性，有一个地方需要注意，就是 class 属性需要写成 className ，for 属性需要写成 htmlFor
 ## 5.状态state
 - 构造函数是唯一能够初始化 this.state 的地方；
 - 直接更新状态不会重新渲染组件，如：
