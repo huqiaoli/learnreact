@@ -62,7 +62,7 @@
 	//类组件应始终使用props调用基础构造函数
 	// class Clock extends React.Component{//定义一个类
 	// 	constructor(props){//constructor是一个构造方法，用来接收参数
-	// 		super(props);//代表父类的构造函数
+	// 		super(props);//必须调用 super()方法才能在继承父类的子类中正确获取到类型的 this
 	// 		this.state = {date:new Date()};//this代表的是实例对象
 	// 	}
 	// 	render(){
@@ -86,8 +86,8 @@
 	//可以在组件类上声明特殊的方法，当组件挂载或卸载时，来运行一些代码：
 	class Clock extends React.Component{
 		// 类 构造函数 初始化 this.state
-		constructor(props){ // ES6中类的constructor函数可以通过super访问其父类的构造函数,如果不加这句，this.props 将在 constructor(构造函数) 中是 undefined(未定义)
-			super(props);
+		constructor(props){ 
+			super(props);// ES6中类的constructor函数可以通过super访问其父类的构造函数,如果不加这句，this.props 将在 constructor(构造函数) 中是 undefined(未定义)
 			this.state = {date:new Date()};
 		}// 注意，ES6中类的方法之间不需要任何符号
 		
