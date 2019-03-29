@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>表单与事件</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+	<div id="root"></div>
+  <script type="text/babel">
+  // class HelloMessage extends React.Component{
+  //   constructor(props){
+  //     super(props);
+  //     this.state = {value:'hello'};
+  //     this.handleChange = this.handleChange.bind(this);
+  //   }
+  //   handleChange(event){
+  //     this.setState({value:event.target.value});
+  //   }
+  //   render(){
+  //     var value = this.state.value;
+  //     return(
+  //       <div>
+  //         <input type="text" value={value} onChange={this.handleChange} />
+  //         <h4>{value}</h4>
+  //       </div>
+  //     )
+  //   }
+  // }
+  // ReactDOM.render(
+  //   <HelloMessage />,
+  //   document.getElementById('root')
+  // )
+
+  //在以下实例中我们将为大家演示如何在子组件上使用表单。 onChange 方法将触发 state 的更新并将更新的值传递到子组件的输入框的 value 上来重新渲染界面。需要在父组件通过创建事件句柄 (handleChange) ，并作为 prop (updateStateProp) 传递到你的子组件上
+  //根据上面实例在子组件上使用表单，参考 14 State 和 Props（index14.html）
+  class Content extends React.Component{
+      render(){
+        return(
+          <div>
+            <input type="text" value={this.props.myDateProp} onChange={this.props.updateStateProp} />
+            <h4>{this.props.myDateProp}</h4>
+          </div>
+        )               
+      }
+  }
+  class HelloMessage extends React.Component{
+    constructor(props){
+      super(props);
+      this.state = {value:'hello'}
+      this.handleChange = this.handleChange.bind(this)
+    }
+    handleChange(event){
+      this.setState({value:event.target.value})
+    }
+    render(){
+      var value = this.state.value;
+      return(
+        <div>
+          <Content 
+            myDateProp={value} 
+            updateStateProp={this.handleChange}></Content>
+        </div>
+      )
+    }
+  }
+  ReactDOM.render(
+    <HelloMessage />,
+    document.getElementById('root')
+  )
+	</script>
+
+</body>
+
+</html>
