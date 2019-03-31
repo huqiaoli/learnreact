@@ -223,3 +223,5 @@ this.setState((prevState, props) => ({
 - 对于 textarea 元素，在HTML当中，是通过子节点（开关标签之间的内容）来定义它的文本内容的，而在React中，是通过 标签属性value来设置它的文本内容的；
 - 对于 select 标签，在HTML中，是通过在设置它的选项option元素的标签属性selected来设置被选中的选项的；而在React中，是通过设置 select 元素的标签属性 value 来设置被选中的值的；
 - 通过给表单元素设置标签属性 defaultValue 可以为其指定初始值；
+## 10.状态提升
+React中的状态提升概括来说,就是将多个组件需要共享的状态提升到它们最近的父组件上.在父组件上改变这个状态然后通过props分发给子组件.
