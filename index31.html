@@ -14,7 +14,7 @@
 	<div id="root"></div>
   <script type="text/babel">
   //创建一个温度计算器来计算水是否会在给定的温度下烧开
-  //先创建一个名为 BoilingVerdict 的组件,它会接受 celsius 这个温度变量作为它的 props 属性，最后根据温度判断返回内容
+  //(1)先创建一个名为 BoilingVerdict 的组件,它会接受 celsius 这个温度变量作为它的 props 属性，最后根据温度判断返回内容
   function BoilingVerdict(props){
     if(props.celsius >= 100){
       return <p>水会烧开</p>
@@ -22,7 +22,7 @@
       return <p>水不会烧开</p>
     
    }
-  // //Calculator 组件,它会渲染一个 <input> 来接受用户输入，然后将输入的温度值保存在 this.state.temperature 当中。它会根据输入的值渲染出 BoilingVerdict 组件
+  // (2)Calculator 组件,它会渲染一个 <input> 来接受用户输入，然后将输入的温度值保存在 this.state.temperature 当中。它会根据输入的值渲染出 BoilingVerdict 组件
   // class Calculator extends React.Component{
   //   constructor(props){
   //     super(props);
@@ -49,7 +49,7 @@
   // )
 
   //添加第二个输入框
-  //通过从 Calculator 组件中抽离一个 TemperatureInput 组件出来。我们也会给它添加一个值为 c 或 f 的表示温度单位的 scale 属性
+  //(3)通过从 Calculator 组件中抽离一个 TemperatureInput 组件出来。我们也会给它添加一个值为 c 或 f 的表示温度单位的 scale 属性
   const scaleNames = {
     c:'Celsius',
     f:'Fahrenheit'
@@ -57,14 +57,14 @@
   // class TemperatureInput extends React.Component{
   //   constructor(props){
   //     super(props);
-  //     this.state = {temperature:''};
+  //     this.state = {temperature:''};//两个TemperatureInput组件都是在自己的 state 中独立保存数据
   //     this.handleChange = this.handleChange.bind(this);
   //   }
   //   handleChange(event){
-  //     this.setState({temperature:event.target.value})
+  //     this.setState({temperature:event.target.value})//state 中独立保存数据
   //   }
   //   render(){
-  //     const temperature = this.state.temperature;
+  //     const temperature = this.state.temperature;//state 中独立保存数据
   //     const scale = this.props.scale;
   //     return(
   //       <fieldset>
@@ -75,6 +75,7 @@
   //   }
   // }
   // class Calculator extends React.Component{
+  //(4)对Calculator稍作修改，来渲染两个不同的温度输入框
   //   render(){
   //     return(
   //       <div>
@@ -84,18 +85,21 @@
   //     )
   //   }
   // }
+  //(5)现在有了两个输入框，但是当你在其中一个输入时，另一个并不会更新。另外，我们此时也不能从 Calculator 组件中展示 BoilingVerdict 的渲染结果。因为现在表示温度的状态数据只存在于 TemperatureInput 组件当中。
   // ReactDOM.render(
   //   <Calculator />,
   //   document.getElementById('root')
   // )
 
-  //将摄氏度和华氏度互相转换的函数
+
+  //(6)将摄氏度和华氏度互相转换的函数
   function toCelsius(fahrenheit){
     return (fahrenheit - 32) * 5 / 9;
   }
   function toFahrenheit(celsius){
     return (celsius * 9 / 5) + 32;
   }
+  //(7)还需要另外一个函数，它接受两个参数，第一个接受字符串 temperature 变量，第二个参数则是上面编写的单位转换函数。最后会返回一个字符串。我们会使用它来根据一个输入框的输入计算出另一个输入框的值
   function tryConvert(temperature,convert){
     const input = parseFloat(temperature);
     if(Number.isNaN(input)){
@@ -105,7 +109,7 @@
     const rounded = Math.round(output * 1000) / 1000;
     return rounded.toString();
   }
-
+  //在React中，状态分享是通过将state数据提升至离需要这些数据的组件最近的父组件来完成的。这就是所谓的状态提升(8)(8)(8)
   class TemperatureInput extends React.Component{
     constructor(props){
       super(props);
@@ -114,11 +118,13 @@
     }
     handleChange(event){
       // 之前的代码: this.setState({temperature: event.target.value});
-      this.props.onTemperatureChange(event.target.value)
+      //(10)做法就是 将父组件中负责setState的函数，以props的形式传给子组件，然后子组件在需要改变state时调用即可
+      this.props.onTemperatureChange(event.target.value)//(11)想要响应数据改变时TemperatureInput 组件希望更新温度时，现在是调用由Calculator提供的this.props.onTemperatureChange() 而不是this.setState()
     }
     render(){
-      // 之前的代码: const temperature = this.state.temperature;
-      const temperature = this.props.temperature
+      // 之前的代码: const temperature = this.state.temperature;//(8)将其自身的 state 从组件中移除，使用 this.props.temperature 替代 this.state.temperature
+      //(9)我们首先知道props是只读的。而之前temperature变量是被保存在其自身的 state 中的，TemperatureInput 组件只需要调用 this.setState() 就能改变它。但现在，temperature 是作为 prop 从父组件传递下来的，TemperatureInput 组件是没有控制权的, 修改父组件的state该怎么办呢?(10)(10)(10)
+      const temperature = this.props.temperature//将 TemperatureInput 组件自身保存的 state 移到 Calculator 中
       const scale = this.props.scale
       return(
         <fieldset>
@@ -128,6 +134,7 @@
       )
     }
   }
+  //如果 Calculator 组件拥有了提升上来共享的状态数据，那它就会成为两个温度输入组件的“数据源”。它会传递给下面温度输入组件一致的数据。由于两个 TemperatureInput 温度组件的props属性都是来源于共同的父组件 Calculator，它们的数据也会保持同步
   class Calculator extends React.Component{
     constructor(props){
       super(props);
@@ -151,11 +158,11 @@
           <TemperatureInput
             scale="c"
             temperature={celsius}
-            onTemperatureChange={this.handleCelsiusChange} />
+            onTemperatureChange={this.handleCelsiusChange} />{/*然后子组件在需要改变state时调用即可*/}
           <TemperatureInput
             scale="f"
             temperature={fahrenheit}
-            onTemperatureChange={this.handleFahrenheitChange} />
+            onTemperatureChange={this.handleFahrenheitChange} />{/*然后子组件在需要改变state时调用即可*/}
           <BoilingVerdict 
             celsius={parseFloat(celsius)} />
         </div>
