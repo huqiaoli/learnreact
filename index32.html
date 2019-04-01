@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>状态提升</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+	<div id="root"></div>
+  <script type="text/babel">
+  //React中的状态提升概括来说,就是将多个组件需要共享的状态提升到它们最近的父组件上.在父组件上改变这个状态然后通过props分发给子组件.
+  // class Child_1 extends React.Component{
+  //   constructor(props){
+  //     super(props);
+  //   }
+  //   render(){
+  //     return(
+  //       <div>
+  //         <h1>{this.props.value+1}</h1>
+  //       </div>
+  //     )
+  //   }
+  // }
+  // class Child_2 extends React.Component{
+  //   constructor(props){
+  //     super(props);
+  //   }
+  //   render(){
+  //     return(
+  //       <div>
+  //         <h2>{this.props.value+2}</h2>
+  //       </div>
+  //     )
+  //   }
+  // }
+  // class Three extends React.Component{
+  //   constructor(props){
+  //     super(props);
+  //     this.state = {txt:'react'};
+  //     this.handleChange = this.handleChange.bind(this)
+  //   }
+  //   handleChange(event){
+  //     this.setState({txt:event.target.value})
+  //   }
+  //   render(){
+  //     return(
+  //       <div>
+  //         <input type="text" value={this.state.txt} onChange={this.handleChange} />
+  //         <p>{this.state.txt}</p>
+  //         <Child_1 value={this.state.txt} />
+  //         <Child_2 value={this.state.txt} />
+  //       </div>
+  //     )
+  //   }
+  // }
+  // ReactDOM.render(
+  //   <Three />,
+  //   document.getElementById('root')
+  // )
+
+
+  //有两个输入框，当一个输入框输入内容时，另一个自动输入相同内容
+  //InputNumber设置了value和onChange，只不过这两个值都在自于父组件传递进来的,父组件将两个组件的value值保存在state中，并设置了子组件要调用的onChange事件对应的函数
+  //基本的输入组件
+  class InputNumber extends React.Component{
+    handleChange = (event) => {
+      this.props.handleChange(event.target.value);
+    }
+    render(){
+      const inputNumber = this.props.number;
+      return(
+        <div>
+          <input type="text" value={inputNumber} onChange={this.handleChange} />{/*设置了value和onChange都是父级组件传递进来的*/}
+        </div>
+      );
+    }
+  }
+  //调用该组件的父级组件
+  class Caculator extends React.Component{
+    constructor(props){
+      super(props);
+      this.state = {number:''};
+      this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange = (number) => {
+      this.setState({number:number});
+    }
+    render(){
+      const number = this.state.number;
+      return(
+        <div>
+          <InputNumber number={number} handleChange={this.handleChange} />
+          <InputNumber number={number} handleChange={this.handleChange} />
+        </div>
+      )
+    }
+  }
+  ReactDOM.render(
+    <Caculator />,
+    document.getElementById("root")
+  );
+	</script>
+
+</body>
+
+</html>

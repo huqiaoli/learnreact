@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>状态提升</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+	<div id="root"></div>
+  <script type="text/babel">
+  //所谓 状态提升 就是将各个子组件的 公共state 提升到它们的父组件进行统一存储、处理（这就是所谓的”单一数据源“），然后再将父组件处理后的数据或函数props到各子组件中。
+  //那么如果子组件 要 修改父组件的state该怎么办呢？我们的做法就是 将父组件中负责setState的函数，以props的形式传给子组件，然后子组件在需要改变state时调用即可。
+
+  //例： 首先你要知道 一个A物品为200元。 有两个input输入框，分别对应价钱和数量。
+  //功能展示： 
+  //（1）当你在 第一个输入框 输入数字(例如：201)后，第二个输入框会自动显示你能买多少个物品，这里显示是 1个 
+  //（2）同理，当你在第二个输入框 输入（例如：3）后，第一个输入框又会自动显示你需要多少钱（这里是：600），才能买3个物品
+  //（3）当然，当你在任意输入框 输入的不是数字，另一输入框则什么都不会发生。 
+  // function inputProtected(input){
+  //   if(Number.isNaN(input) || input <= 0){
+  //     return '';
+  //   }else{
+  //     return Math.floor(input).toString();
+  //   }
+  // }
+  // let dataTitle = {
+  //   m:'需要花多少钱：',
+  //   n:'能买这么多个：'
+  // }
+  // class Calculation extends React.Component{
+  //   render(){
+  //     let data = this.props.data;
+  //     let title = this.props.title;
+  //     let changeDate = this.props.changeDate;
+  //     return(
+  //       <div>
+  //         <fieldset>
+  //           <legend>{title}</legend>
+  //           <input type="text" value={data} onChange={changeDate} />
+  //         </fieldset>
+  //       </div>
+  //     )
+  //   }
+  // }
+  // class App extends React.Component{
+  //   constructor(props){
+  //     super(props);
+  //     this.state = {
+  //       type:'money',
+  //       input:''
+  //     }
+  //   }
+  //   handleDate(type,e){
+  //     if(type === 'money'){
+  //       this.setState({type:'money',input:e.target.value});
+  //     }else if(type === 'number'){
+  //       this.setState({type:'number',input:e.target.value});  
+  //     }
+  //   }
+  //   convertNumber(input){
+  //     return Math.floor(input/200);
+  //   }
+  //   convertMoney(input){
+  //     return input * 200;
+  //   }
+  //   render(){
+  //     let input = this.state.input;
+  //     let type = this.state.type;
+  //     let number = type==='money' ? inputProtected(this.convertNumber.bind(this,input)()) : input;
+  //     let money =type==='number' ? inputProtected(this.convertMoney.bind(this,input)()) : input;
+  //     return(
+  //       <div>
+  //         <h4>价格：200元一个</h4>
+  //         <Calculation 
+  //           data={money}
+  //           title={dataTitle.m}
+  //           changeDate={(e)=>this.handleDate('money',e)} />
+  //         <Calculation
+  //           data={number}
+  //           title={dataTitle.n}
+  //           changeDate={(e)=>this.handleDate('number',e)} />
+  //       </div>
+  //     )
+  //   }
+  // }
+  // ReactDOM.render(
+  //   <App />,
+  //   document.getElementById('root')
+  // )
+
+
+  //React的状态提升就是用户对子组件操作，子组件不改变自己的状态，通过自己的props把这个操作改变的数据传递给父组件，改变父组件的状态，从而改变受父组件控制的所有子组件的状态，这也是React单项数据流的特性决定的。官方的原话是：共享 state(状态) 是通过将其移动到需要它的组件的最接近的共同祖先组件来实现的。 这被称为“状态提升(Lifting State Up)”。
+　//现在有个需求，有两个输入框，分别用来输入美元和人民币的数额，要求不管用户输入美元还是人民币，另一个输入框显示出根据汇率计算出的对应的数额。
+　//每个组件的state是自己特有的，不能传递给其他组件，其他组件也无法更改。但是我们可以把input中值的显示控制权交给input的父组件，即把用户输入的数值通过props传递给它的父亲组件，在更新父组件的状态后，把这个值再传递给input，做个显示就可以了。
+  class Dollar extends React.Component{
+    constructor(props){
+      super(props);
+      this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange(event){
+      this.props.dollarChange(event.target.value);//将子组件的值通过props传给父组件
+    }
+    render(){
+      const money = this.props.money;
+      const yuan = this.props.yuan;
+      const text = this.props.type == 'd' ? '美元' : '人民币';
+      return(
+        <fieldset>
+          <legend>{text}</legend>
+          <input value={money} onChange={this.handleChange} />
+        </fieldset>
+      )
+    }
+  }
+  class Box extends React.Component{
+    constructor(props){
+      super(props);
+      this.state = {
+        dollar:'',
+        yuan: ''
+      }
+      this.dollarInput = this.dollarInput.bind(this);
+      this.yuanInput = this.yuanInput.bind(this);
+    }
+    dollarInput(value){
+      if(parseFloat(value) || value=='' || parseFloat(value)==0){
+        this.setState({
+          dollar:value,
+          yuan:value=='' ? '' : value * 6.7951
+        });
+      }else{
+        alert('输入值必须为数字。');
+      }
+    }
+    yuanInput(value){
+      if(parseFloat(value) || value=='' || parseFloat(value)==0){
+        this.setState({
+          dollar:value=='' ? '' : value * 0.1472,
+          yuan:value
+        })
+      }else{
+        alert('输入值必须为数字。');
+      }
+    }
+    render(){
+      return(
+        <div>
+          <Dollar type={'d'} dollarChange={this.dollarInput} money={this.state.dollar} />
+          <Dollar type={'y'} dollarChange={this.yuanInput} money={this.state.yuan} />
+        </div>
+      )
+    }
+  }
+  ReactDOM.render(
+    <Box />,
+    document.getElementById('root')
+  )
+	</script>
+
+</body>
+
+</html>
