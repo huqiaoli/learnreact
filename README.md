@@ -219,9 +219,68 @@ this.setState((prevState, props) => ({
 - key不会作为props传入组件：可以认为key是React在JSX中的保留字，你不能用它来向组件传递数据而应该改用其他词
 
 ## 9.表单
+##### 状态属性
+表单元素有这么几种属于状态的属性：
+- value，对应 <input> 和 <textarea> 所有
+- checked，对应类型为 checkbox 和 radio 的 <input> 所有
+- selected，对应 <option> 所有
 
-- 对于 textarea 元素，在HTML当中，是通过子节点（开关标签之间的内容）来定义它的文本内容的，而在React中，是通过 标签属性value来设置它的文本内容的；
-- 对于 select 标签，在HTML中，是通过在设置它的选项option元素的标签属性selected来设置被选中的选项的；而在React中，是通过设置 select 元素的标签属性 value 来设置被选中的值的；
-- 通过给表单元素设置标签属性 defaultValue 可以为其指定初始值；
+针对这些状态属性不同的处理策略，表单元素在 React 里面有两种表现形式。
+
+在 HTML 中 <textarea> 的值可以由子节点（文本）赋值，但是在 React 中，是通过 标签属性value来设置它的文本内容的。
+
+表单元素包含以上任意一种状态属性都支持 onChange 事件监听状态值的更改。
+##### 受控组件
+对于设置了上面提到的对应“状态属性“值的表单元素就是受控表单组件，比如：
+
+```
+render: function() {
+    return <input type="text" value="hello"/>;
+}
+```
+一个受控的表单组件，它所有状态属性更改涉及 UI 的变更都由 React 来控制（状态属性绑定 UI）。比如上面代码里的 <input> 输入框，用户输入内容，用户输入的内容不会显示（输入框总是显示状态属性 value 的值 hello），这有点颠覆我们的认知了，所以说这是受控组件，不是原来默认的表单元素了。
+
+如果你希望输入的内容反馈到输入框，就要用 onChange 事件改变状态属性 value 的值：
+
+```
+getInitialState: function() {
+    return {value: 'hello'};
+},
+handleChange: function(event) {
+    this.setState({value: event.target.value});
+},
+render: function() {
+    var value = this.state.value;
+    return <input type="text" value={value} onChange={this.handleChange} />;
+}
+```
+使用这种模式非常容易实现类似对用户输入的验证，或者对用户交互做额外的处理，比如截断最多输入140个字符：
+
+```
+handleChange: function(event) {
+    this.setState({value: event.target.value.substr(0, 140)});
+}
+```
+##### 非受控组件
+
+- 和受控组件相对，如果表单元素没有设置自己的“状态属性”，或者属性值设置为 null，这时候就是非受控组件。
+- 它的表现就符合普通的表单元素，正常响应用户的操作。
+- 同样，你也可以绑定 onChange 事件处理交互。
+- 如果你想要给“状态属性”设置默认值，就要用 React 提供的特殊属性 defaultValue，对于 checked 会有 defaultChecked，<option> 也是使用 defaultValue。
+
+###### <select>
+对于 select 标签，在HTML中，是通过在设置它的选项option元素的标签属性selected来设置被选中的选项的；而在React中，是通过设置 select 元素的标签属性 value 来设置被选中的值的；
+
+所以没有一个 selected 的状态属性
+
+```
+<select value="B">
+    <option value="A">Apple</option>
+    <option value="B">Banana</option>
+    <option value="C">Cranberry</option>
+</select>
+```
+你可以通过传递一个数组指定多个选中项：<select multiple={true} value={['B', 'C']}>
+	
 ## 10.状态提升
 React中的状态提升概括来说,就是将多个组件需要共享的状态提升到它们最近的父组件上.在父组件上改变这个状态然后通过props分发给子组件.
