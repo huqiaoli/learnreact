@@ -10,7 +10,60 @@ ReactDom.render接受两个参数，第一个是要被插入的内容，第二�
 - 在JSX中的XML，通过引号定义以字符串为值的标签属性，通过大括号来定义以 js 表达式为值的标签属性；切注意：如果使用了大括号包裹的 js 表达式时就不要再到外面套引号了。JSX 会将引号当中的内容识别为字符串而不是表达式；
 - JSX不允许没有闭合的标签；
 - 因为 JSX 的特性更接近 js 而不是 HTML , 所以 XML 使用 camelCase 小驼峰命名 来定义属性的名称，而不是使用 HTML 的属性名称;例如：class 用 className 代替，而 tabindex 用 tabIndex 代替；
-## 3.注释
+
+## 3.react样式、类使用
+##### className 引入多个类
+
+```
+// 三目运算，结果包含多个类
+<div className={index === this.state.active ? "active title" : 'title'}>
+标题
+</div>
+
+// 使用数组的join方法组合class
+<div className={["container tab", index===this.state.currentIndex?"active":null].join(' ')}>此标签是否选中</div>
+
+// 使用`${}`字符串运算
+<div className={`container tab ${index===this.state.currentIndex?"active":null}`}>此标签是否选中</div>
+
+```
+##### 引入css样式，设置className
+css文件的内容
+
+```
+.sty1{//和普通CSS一样定义class选择器
+    background-color: red;
+    color: white;
+    font-size: 40px;
+}
+```
+引入css文件的用法
+
+```
+import './style.css';
+<div className="sty1">看背景颜色和文字颜色</div>
+```
+##### JSX中的style属性应该使用“驼峰”命名
+
+```
+<div style={{"marginLeft": "100px"}}>
+	<div style={{"fontSize":"16px","lineHeight":"1.8"}}>可比克黄瓜薯片</div>
+	<div style={{"lineHeight":"1.8"}}>售价：8 元</div>
+	<div style={{"clear": "both"}}></div>
+</div>
+```
+{{"lineHeight":"1.8"}} 最外面的{}表示jsx的运算符，里面的{}表示是接收一个JSON对象值
+##### style属性接收一个JSON对象
+
+```
+let backAndTextColor = {
+    backgroundColor:'red',
+    color:'white',
+    fontSize:40
+};
+<div style={backAndTextColor}>看背景颜色和文字颜色</div>
+```
+## 4.注释
 ```
 ReactDOM.render(
     <div>
@@ -26,7 +79,7 @@ ReactDOM.render(
 - 在标签内部的注释需要花括号{}括住；
 - 在标签外的注释不使用花括号{}；
 
-## 4.组件 & Props
+## 5.组件 & Props
 - 定义一个组件最简单的方式是使用js函数，之所以称这种类型的组件为函数定义组件
 - 从概念上看组件就像是函数，它可以接收任意的输入值（称之为“props”），并返回一个需要在页面上展示的React元素；
 - 也可以使用 ES6 class 来定义一个组件
@@ -57,7 +110,7 @@ ReactDOM.render(
 4、组件的属性可以在组件类的 this.props 对象上获取，比如 name 属性就可以通过 this.props.name 读取；
 	  
 5、添加组件属性，有一个地方需要注意，就是 class 属性需要写成 className ，for 属性需要写成 htmlFor
-## 5.状态state
+## 6.状态state
 - 构造函数是唯一能够初始化 this.state 的地方；
 ##### 1、不要直接更新状态
 例如，此代码不会重新渲染组件：
@@ -140,7 +193,7 @@ componentDidMount() {
 - Props是组件实例的标签属性的集合；它可以接收组件外传进来的值，在组件内部是不可修改Props的属性的，在组件外部可以通过标签属性给它赋值，所以可以用来从组件外部给组件内部传值；
 - State是组件实例的内部数据的集合；在组件内部是可以更改State的属性的值，且每次更改后，都会触发render方法渲染组件；
 - 组件的标签属性在使用前不用先定义；而组件的内部数据State的属性在使用前需要先通过getInitialState方法定义；
-## 6.事件处理
+## 7.事件处理
 - React事件绑定属性的命名采用驼峰式写法，而不是小写。
 - 如果采用 JSX 的语法，则需要传入一个函数作为事件处理函数，而不是一个字符串(DOM元素的写法)；
 - 不能使用返回 false 的方式阻止默认行为，必须明确的使用 preventDefault 来阻止默认行为；
@@ -181,7 +234,7 @@ this.handleClick = this.handleClick.bind(this);
 
 函数：**handleclick(传过来的参数，event)**
 
-## 7.条件渲染
+## 8.条件渲染
 ###### 通过条件渲染页面：
 
 首先建一个函数，来根据不同的情况返回不同的值，然后建一个类组建，先进行变量的初始化，对变量进行操作，在组件内进行小的渲染，最后通过 ReactDOM.render() 渲染到页面上。
@@ -209,7 +262,7 @@ this.setState((prevState, props) => ({
     //do something here
 }));
 ```
-##  8.key
+##  9.key
 ###### key的使用需要注意一下几点：
 - 数组中的每一项都要有固定的key，以便React区分哪些元素变化(增加/修改/移除),它只是作为React自己识别，并不会传递到组件上
 - 一个array创建的elements列表中，item的key应该是独一无二的。
@@ -218,7 +271,7 @@ this.setState((prevState, props) => ({
 - key需要在列表范围内保证唯一性：同一个数组中的key需要保证唯一性，但不同数组中的key无所谓
 - key不会作为props传入组件：可以认为key是React在JSX中的保留字，你不能用它来向组件传递数据而应该改用其他词
 
-## 9.表单
+## 10.表单
 ##### 状态属性
 表单元素有这么几种属于状态的属性：
 - value，对应 <input> 和 <textarea> 所有
@@ -268,7 +321,7 @@ handleChange: function(event) {
 - 同样，你也可以绑定 onChange 事件处理交互。
 - 如果你想要给“状态属性”设置默认值，就要用 React 提供的特殊属性 defaultValue，对于 checked 会有 defaultChecked，<option> 也是使用 defaultValue。
 
-###### <select>
+###### select 标签
 对于 select 标签，在HTML中，是通过在设置它的选项option元素的标签属性selected来设置被选中的选项的；而在React中，是通过设置 select 元素的标签属性 value 来设置被选中的值的；
 
 所以没有一个 selected 的状态属性
@@ -281,6 +334,6 @@ handleChange: function(event) {
 </select>
 ```
 你可以通过传递一个数组指定多个选中项：<select multiple={true} value={['B', 'C']}>
-	
-## 10.状态提升
+
+## 11.状态提升
 React中的状态提升概括来说,就是将多个组件需要共享的状态提升到它们最近的父组件上.在父组件上改变这个状态然后通过props分发给子组件.
