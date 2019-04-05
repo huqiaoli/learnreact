@@ -14,7 +14,9 @@
 	<div id="root"></div>
   <script type="text/babel">
   //包含关系
-  //使用 children 属性将子元素直接传递到输出
+  //所谓的包容化组件即为不管孩子是什么都可以加进这个容器中作为它的子组件(这种形式的代码可以让我们任意加入JSX语句)
+  //props有个特殊属性，children，组件可以通过props.children拿到所有包含在内的子元素，
+  //当组件内有子元素时，组件属性上的children属性不生效，当组件无子元素时，属性中的children生效
   function FancyBorder(props){
     return(
       <div className={'FancyBorder FancyBorder-' + props.color}>
@@ -22,7 +24,7 @@
       </div>
     )
   }
-  //还允许其他组件通过嵌套 JSX 来传递子组件
+  //这种形式的代码可以让我们任意加入JSX语句
   // function WelcomeDialog(){
   //   return(
   //     <FancyBorder color="blue">
@@ -39,7 +41,10 @@
   //   <WelcomeDialog />,
   //   document.getElementById('root')
   // )
+  //这个WelcomeDialog就是包含一个FancyBorder，我们给他传入子组件，然后这个FancyBorder还是会正确的渲染出来，从而实现了代码的复用
+
   //可能需要在组件中有多个入口，这种情况下你可以使用自己约定的属性而不是 children
+  //这里我们分成了左边 右边(Contacts 和 Chat 是两个自定义组件)两个部分来传递子组件
   // function Contacts(){
   //   return <div className="Contacts" />
   // }
@@ -73,6 +78,7 @@
 
   //特殊实例
   //通过配置属性用较特殊的组件来渲染较通用的组件
+  //如果我们有一个组件仅仅是一个通用组件传入了某个特殊的属性值，那么这个组件就是特殊实例,比如Dialog可以形成专门的一个欢迎Dialog
   function Dialog(props){
     return(
       <FancyBorder color="blue">
@@ -96,6 +102,7 @@
     <WelcomeDialog />,
     document.getElementById('root')
   )
+  //可以看到这个WelcomeDialog就是Dialog的特殊实例
 	</script>
 
 </body>
