@@ -337,3 +337,5 @@ handleChange: function(event) {
 
 ## 11.状态提升
 React中的状态提升概括来说,就是将多个组件需要共享的状态提升到它们最近的父组件上.在父组件上改变这个状态然后通过props分发给子组件.
+## 12.组合 vs 继承
+经过测试，发现children属性还是组件内的内容，而不是组件的属性值，后来我看了一下网友的分享，就是当<FancyBorder> </FancyBorder>这个标签内没有任何东西的时候，props.children才代表的是组件传入的children属性值
