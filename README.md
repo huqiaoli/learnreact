@@ -338,4 +338,27 @@ handleChange: function(event) {
 ## 11.状态提升
 React中的状态提升概括来说,就是将多个组件需要共享的状态提升到它们最近的父组件上.在父组件上改变这个状态然后通过props分发给子组件.
 ## 12.组合 vs 继承
-经过测试，发现children属性还是组件内的内容，而不是组件的属性值，后来我看了一下网友的分享，就是当<FancyBorder> </FancyBorder>这个标签内没有任何东西的时候，props.children才代表的是组件传入的children属性值
+在 JSX 中，开始标签和结束标签之间的子代内容会作为props.children传递；开始标签和结束标签之间可以是任何类型的东西，只要该组件在 React 渲染前能将其转换成 React 能够理解的东西即可；
+例如，可以传递如下类型的子代：
+
+- 字符串常量：如果在开始和结束标签之间放入一个字符串，则 props.children 就是那个字符串；因为 HTML 未被转义，所以可以像写 HTML 一样写 JSX；JSX 会移除行空行和开始和结尾处的空格。标签邻近的新行也会被移除，字符串常量内部的换行会被压缩成一个空格；
+- JSX：可以开始和结束标签之间嵌入更多的 JSX 元素；
+- JavsScript 表达式：可以将任何 {} 包裹的 JavaScript 表达式作为子代传递；
+- 函数：可以将用 {} 包裹的函数作为子代传递；
+- 布尔值、Null 和 Undefined 被忽略：
+- false、null、undefined 和 true 都是有效的子代，但它们不会直接被渲染；而当子代是React 提供的一些 "falsy" 值 （即：除了false 外，0，“”，null，undefined 和 NaN）时，则会被渲染；
+
+下面的表达式是等价的：
+```
+<div />
+
+<div></div>
+
+<div>{false}</div>
+
+<div>{null}</div>
+
+<div>{undefined}</div>
+
+<div>{true}</div>
+```
