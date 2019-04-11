@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Refs & DOM</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+  <div id="root"></div>
+	<script type="text/babel">
+	/*-----创建 Refs-----*/
+	//使用 React.createRef() 创建 refs，通过 ref 属性来获得 React 元素
+	class MyComponent extends React.components{
+		constructor(props){
+			super(props);
+			this.myRef = React.createRef();
+		}
+		render(){
+			return <div ref={this.myRef} />
+		}
+	}
+
+
+    /*--为 DOM 元素添加 Ref--*/
+	class CustomTextInput extends React.Component{
+		constructor(props){
+			super(props);
+			// 创建 ref 存储 textInput DOM 元素
+			this.textInput = React.createRef();
+			this.focusTextInput = this.focusTextInput.bind(this);
+		}
+		focusTextInput(){
+			// 直接使用原生 API 使 text 输入框获得焦点
+      // 注意：通过 "current" 取得 DOM 节点
+			this.textInput.current.focus();
+		}
+		render(){
+			// 告诉 React 我们想把 <input> ref 关联到构造器里创建的 `textInput` 上
+			return(
+				<div>
+					<input type="text" ref={this.textInput} />
+					<input type="button" value="Focus the text input" onClick={this.focusTextInput} />
+				</div>
+			)
+		}
+	}
+	ReactDOM.render(
+		<CustomTextInput />,
+		document.getElementById('root')
+	)
+	//React 会在组件加载时将 DOM 元素传入 current 属性，在卸载时则会改回 null。ref 的更新会发生在componentDidMount 或 componentDidUpdate 生命周期钩子之前
+
+
+	/*--为类组件添加 Ref--*/
+	//如果我们想要包装上面的 CustomTextInput ，来模拟挂载之后立即被点击的话，我们可以使用 ref 来访问自定义输入，并手动调用它的 focusTextInput 方法
+	class AutoFocusTextInput extends React.Component{
+		constructor(props){
+			super(props);
+			this.textInput = React.createRef();
+		}
+		componentDidMount(){
+			this.textInput.current.focusTextInput();
+		}
+		render(){
+			return(
+				<CustomTextInput ref={this.textInput} />
+			);
+		}
+	}
+	ReactDOM.render(
+		<AutoFocusTextInput />,
+		document.getElementById('root')
+	)
+  
+  
+	/*--Refs 与函数式组件--*/
+	//不能在函数式组件上使用 ref 属性，因为它们没有实例
+	function MyFunctionalComponent(){
+		return <input />;
+	}
+	class Parent extends React.Component{
+		constructor(props){
+			super(props);
+			this.textInput = React.createRef();
+		}
+		render(){
+			// 这将 *不会* 工作！
+			return(
+				<MyFunctionalComponent ref={this.textInput} />
+			);
+		}
+	}
+  //如果你想使用 ref，就像你想使用生命周期方法或者 state 一样，应该将其转换为 class 组件。
+  //但是，你可以在函数式组件内部使用 ref，只要它指向一个 DOM 元素或者 class 组件
+	function CustomTextInput(props){
+		// 这里必须声明 textInput，这样 ref 回调才可以引用它
+		let textInput = null;
+		function handleClick(){
+			textInput.focus();
+		}
+		return(
+			<div>
+				<input type="text" ref={(input) => {textInput = input;}} />
+				<input type="button" value="Focus the text input" onClick={handleClick} />
+			</div>
+		);
+	}
+
+
+	/*--回调 Refs--*/
+	//使用 ref 回调函数，在实例的属性中存储对 DOM 节点的引用
+	class CustomTextInput extends React.Component{
+		constructor(props){
+			super(props);
+			this.textInput = null;
+			this.setTextInputRef = element => {
+				this.textInput = element;
+			};
+			this.focusTextInput = () => {
+				// 直接使用原生 API 使 text 输入框获得焦点
+				if(this.textInput) this.textInput.focus();
+			};
+		}
+		componentDidMount(){
+			// 渲染后文本框自动获得焦点
+			this.focusTextInput();
+		}
+		render(){
+			// 使用 `ref` 的回调将 text 输入框的 DOM 节点存储到 React
+      // 实例上（比如 this.textInput）
+			return(
+				<div>
+					<input type="text" ref={this.setTextInputRef} />
+					<input type="button" value="Focus the text input" onClick={this.focusTextInput} />
+				</div>	
+			);
+		}
+	}
+	//React 将在组件挂载时将 DOM 元素传入ref 回调函数并调用，当卸载时传入 null 并调用它
+
+	function CustomTextInput(props){
+		return(
+			<div>
+				<input ref={props.inputRef} />
+			</div>
+		);
+	}
+	class Parent extends React.Component{
+		render(){
+			return(
+				<CustomTextInput
+					inputRef={el => this.inputElement = el}
+					/>
+			);
+		}
+	}
+	</script>
+
+</body>
+
+</html>
