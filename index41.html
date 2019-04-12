@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>不使用 ES6</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+  <div id="root"></div>
+  <script type="text/babel">
+  //用 JavaScript 的 class 关键字来创建 React 组件
+  class Greeting extends React.Component{
+    render(){
+      return <h1>Hello,{this.props.name}</h1>;
+    }
+  }
+
+  //如果你不打算使用 ES6，你也可以使用 create-react-class 模块来创建
+  var createReactClass = require('create-react-class');
+  var Greeting = createReactClass({
+    render:function(){
+      return <h1>Hello,{this.props.name}</h1>;
+    }
+  })
+
+
+  //ES6 中 class 相关的接口与 createReactClass 方法十分相似，但有以下几个区别值得注意
+
+  /*-----声明默认属性-----*/
+  //使用 class 关键字创建组件，可以直接把自定义属性对象写到类的 defaultProps 属性中
+  class Greeting extends React.Component{ 
+  }
+  Greeting.defaultProps = {
+    name:'Mary'
+  }
+
+  //使用 createReactClass 方法创建组件，那就需要在参数对象中定义 getDefaultProps 方法，并且在这个方法中返回包含自定义属性的对象
+  var Greeting = createReactClass({
+    getDefaultProps: function(){
+      return{
+        name:'Mary'
+      };
+    },
+  })
+
+
+  /*-----设置初始状态-----*/
+  //使用 class 关键字创建组件，可以通过在 constructor 中给 this.state 赋值的方式来定义组件的初始状态
+  class Counter extends React.Component{
+    constructor(props){
+      super(props);
+      this.state = {count:props.initialCount};
+    }
+  }
+
+  //使用 createReactClass 方法创建组件，就需要多写一个 getInitialState 方法，并让这个方法返回你要定义的初始属性
+  var Counter = createReactClass({
+    getInitialState:function(){
+      return{count:this.props.initialCount};
+    }
+  })
+
+
+  /*-----自动绑定-----*/
+  //对于使用 class 关键字创建的 React 组件，组件中的方法是不会自动绑定 this 的。
+  //类似地，通过 ES6 class 生成的实例，实例上的方法也不会绑定 this。
+  //因此，你需要在 constructor 中为方法手动添加 .bind(this)
+  class SayHello extends React.Component{
+    constructor(props){
+      super(props);
+      this.state = {message:'hello'};
+      //重点
+      this.handleClick = this.handleClick.bind(this);
+    }
+    handleClick(){
+      alert(this.state.message);
+    }
+    render(){
+      // 由于 `this.handleClick` 已经绑定至实例，因此我们才可以用它来处理点击事件
+      return(
+        <button onClick={this.handleClick}>
+          Say hello
+        </button>
+      )
+    }
+  }
+
+  //如果使用 createReactClass 方法创建组件，组件中的方法会自动绑定至实例，不需要像上面那样加 .bind(this)
+  var SayHello = createReactClass({
+    getInitialState:function(){
+      return {message:'hello'}
+    },
+    handleClick:function(){
+      alert(this.state.message);
+    },
+    render:function(){
+      return(
+        <button onClick={this.handleClick}>
+        Say hello
+        </button>
+      );
+    }
+  })
+  //为了保险起见，以下三种做法都是可以的：
+  //把方法绑定给构造器 (constructor)
+  //使用箭头函数，比如这样写：onClick={(e) => this.handleClick(e)}.
+  //使用 createReactClass.
+	</script>
+
+</body>
+
+</html>
