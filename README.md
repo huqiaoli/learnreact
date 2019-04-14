@@ -362,3 +362,8 @@ React中的状态提升概括来说,就是将多个组件需要共享的状态�
 
 <div>{true}</div>
 ```
+## 使用 PropTypes 检查类型
+PropTypes 输出了一系列的验证器，可以用来确保接收到的参数是有效的。例如，我们可以使用PropTypes.string 语句。当给 prop 传递了一个不正确的值时，JavaScript控制台将会显示一条警告。出于性能的原因，propTypes仅在开发模式中检测
+
+- 使用 PropTypes.element 你可以指定只传递一个子代
+- 你可以通过配置 defaultProps 为 props定义默认值
