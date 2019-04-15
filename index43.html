@@ -13,27 +13,56 @@
 
   <div id="root"></div>
   <script type="text/babel">
-  function ThemedButton(props) {
-  return <Button theme={props.theme} />;
-}
+  //通过一个“theme”属性手动调整一个按钮组件的样式
+  function ThemedButton(props){
+    return <Button theme={props.theme} />;
+  }
+  // 中间组件
+  function Toolbar(props){
+    // Toolbar 组件必须添加一个额外的 theme 属性
+    // 然后传递它给 ThemedButton 组件
+    return (
+      <div>
+        <ThemedButton theme={props.theme} />
+      </div>
+    )
+  }
+  class App extends React.Component{
+    render(){
+      return <Toolbar theme="dark" />
+    }
+  }
+ 
 
-// 中间组件
-function Toolbar(props) {
-  // Toolbar 组件必须添加一个额外的 theme 属性
-  // 然后传递它给 ThemedButton 组件
-  return (
+ //使用 context, 我可以避免通过中间元素传递 props
+
+ // 创建一个 theme Context,  默认 theme 的值为 light
+ const ThemeContext = React.createContext('light');
+ function ThemedButton(props){
+   // ThemedButton 组件从 context 接收 theme
+   return(
+     <ThemeContext.Consumer>
+      {theme => <Button {...props} theme={theme} />}
+     </ThemeContext.Consumer>
+   );
+ }
+ // 中间组件
+ function Toolbar(props){
+  return(
     <div>
-      <ThemedButton theme={props.theme} />
+      <ThemedButton />
     </div>
   );
-}
-
-class App extends React.Component {
-  render() {
-    return <Toolbar theme="dark" />;
-  }
-}
-  
+ }
+ class App extends React.Component{
+   render(){
+     return(
+       <ThemeContext.Provider value="dark">
+        <Toolbar />
+      </ThemeContext.Provider>
+     );
+   }
+ }
 	</script>
 
 </body>
