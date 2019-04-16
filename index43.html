@@ -34,35 +34,147 @@
   }
  
 
- //使用 context, 我可以避免通过中间元素传递 props
+  //使用 context, 我可以避免通过中间元素传递 props
 
- // 创建一个 theme Context,  默认 theme 的值为 light
- const ThemeContext = React.createContext('light');
- function ThemedButton(props){
+  // 创建一个 theme Context,  默认 theme 的值为 light
+  const ThemeContext = React.createContext('light');
+  function ThemedButton(props){
    // ThemedButton 组件从 context 接收 theme
-   return(
-     <ThemeContext.Consumer>
-      {theme => <Button {...props} theme={theme} />}
-     </ThemeContext.Consumer>
-   );
- }
- // 中间组件
- function Toolbar(props){
-  return(
-    <div>
-      <ThemedButton />
-    </div>
-  );
- }
- class App extends React.Component{
-   render(){
-     return(
-       <ThemeContext.Provider value="dark">
-        <Toolbar />
-      </ThemeContext.Provider>
-     );
-   }
- }
+    return(
+      <ThemeContext.Consumer>
+        {theme => <Button {...props} theme={theme} />}
+      </ThemeContext.Consumer>
+    );
+  }
+  // 中间组件
+  function Toolbar(props){
+    return(
+      <div>
+        <ThemedButton />
+      </div>
+    );
+  }
+  class App extends React.Component{
+    render(){
+      return(
+        <ThemeContext.Provider value="dark">
+          <Toolbar />
+        </ThemeContext.Provider>
+      );
+    }
+  }
+
+
+  //作用于多个上下文
+
+  // 主题上下文, 默认light
+  const ThemeContext = React.createContext('light');
+  // 登陆用户上下文
+  const UserContext = React.createContext();  
+  // 一个依赖于两个上下文的中间组件       
+  function Toolbar(props){
+    return(
+      <ThemeContext.Consumer>
+        {theme => (
+          <UserContext.Consumer>
+            {user => (
+              <ProfilePage user={user} theme={theme} />
+            )}  
+          </UserContext.Consumer>
+        )}
+      </ThemeContext.Consumer>
+    );
+  }
+  class App extends React.Component{
+    render(){
+      const {signedInUser,theme} = this.props;
+      // App组件提供上下文的初始值
+      return(
+        <ThemeContext.Provider value={theme}>
+          <UserContext.Provider value={signedInUser}>
+            <Toolbar />
+          </UserContext.Provider>  
+        </ThemeContext.Provider>
+      )
+    }
+  }
+
+
+
+  //在生命周期方法中访问 Context
+  class Button extends React.Component{
+    componentDidMount(){
+      // ThemeContext value is this.props.theme
+    }
+    componentDidUpdate(prevProps,prevState){
+      // Previous ThemeContext value is prevProps.theme
+      // New ThemeContext value is this.props.theme
+    }
+    render(){
+      const {theme,children} = this.props;
+      return(
+        <button className={theme ? 'dark' : 'light'}>
+          {children} 
+        </button>
+      );
+    }
+  }
+  export default props => (
+    <ThemeContext.Consumer>
+      {theme => <Button {...props} theme={theme} /> }  
+    </ThemeContext.Consumer>
+  )
+
+
+  //高阶组件中的 Context
+
+  //一个按钮组件也许被作用于一个主题 context
+  const ThemeContext = React.createContext('light');
+  function ThemedButton(props){
+      return(
+        <ThemeContext.Consumer>
+          {theme => <button {...props} className={theme} />}  
+        </ThemeContext.Consumer>
+      )
+  }
+  //这对于少量组件来说并没有毛病，但是如果我们想在很多地方使用主题上下文呢
+  //可以创建一个命名为 withTheme 高阶组件
+  const ThemeContext = React.createContext('light');
+  // 在函数中引入组件
+  export function withTheme(Component){
+    // 然后返回另一个组件
+      return function ThemedComponent(props){
+        // 最后使用context theme渲染这个被封装组件
+      // 注意我们照常引用了被添加的属性
+        return(
+          <ThemeContext.Consumer>
+            {theme => <Component {...props} theme={theme} />}  
+          </ThemeContext.Consumer>
+        )
+      }
+  }
+  function Button({theme,...rest}){
+      return <button className={theme} {...rest} />;
+  }
+  const ThemedButton = withTheme(Button);
+
+
+
+  //转发 Refs
+  class FancyButton extends React.Component{
+    focus(){
+
+    }
+  }
+  export default React.forwardRef((props,ref) => (
+    <ThemeContext.Consumer>
+      {theme => (<FancyButton {...props} theme={theme} ref={ref} />)}  
+    </ThemeContext.Consumer>
+  ))
+  const ref = React.createRef();
+  <FancyButton ref={ref} onClick={handleClick}>
+    click me
+  </FancyButton>;
 	</script>
 
 </body>
