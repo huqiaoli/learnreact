@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Fragments</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+  <div id="root"></div>
+  <script type="text/babel">
+  //注意在 React 中， <></> 是 <React.Fragment/> 的语法糖
+  class Columns extends React.Component{
+    render(){
+      return(
+        <React.Fragment>
+          <td>hello</td>
+          <td>world</td>
+        </React.Fragment>
+      )
+    }
+  }
+  class Table extends React.Component{
+    render(){
+      return(
+        <table>
+          <tbody>
+            <tr>
+              <Columns />
+            </tr>
+          </tbody>
+        </table>
+      )
+    }
+  }
+  ReactDOM.render(
+    <Table />,
+    document.getElementById('root')
+  )
+
+
+  //<></> 语法不能接受键值或属性。
+  //如果你需要一个带 key 的片段，你可以直接使用 <React.Fragment /> 。 一个使用场景是映射一个集合为一个片段数组 — 例如：创建一个描述列表
+  // function Glossary(props){
+  //   return(
+  //     <dl>
+  //       {props.items.map(item =>(
+  //         <React.Fragment key={item.id}>
+  //           <dt>{item.term}</dt>
+  //           <dd>{item.description}</dd>
+  //         </React.Fragment>
+  //       ))}
+  //     </dl>
+  //   );
+  // }
+  // const items = [
+  //   {id:1,term:'Hello World',description: 'Welcome to learning React!'},
+  //   {id:2,term:'Installation',description: 'You can install React from npm.'}
+  // ]
+  // ReactDOM.render(
+  //   <Glossary items={items} />,
+  //   document.getElementById('root')
+  // )
+	</script>
+
+</body>
+
+</html>
