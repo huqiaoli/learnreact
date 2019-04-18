@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Web Components</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+  <div id="root"></div>
+  <script type="text/babel">
+  //在React中使用Web组件
+  class HelloMessage extends React.Component{
+    render(){
+      return <div>hello <x-search>{this.props.name}</x-search></div>
+    }
+  }
+
+  function BrickFlipbox(){
+    return(
+      <brick-flipbox class="demo">
+        <div>front</div>
+        <div>back</div>
+      </brick-flipbox>
+    )
+  }
+
+
+  //在Web组件中使用React
+  const proto = Object.create(HTMLElement.prototype,{
+    attachedCallback:{
+      value:function(){
+        const mountPoint = document.createElement('span');
+        this.createShadowRoot().appendChild(mountPoint);
+        const name = this.getAttribute('name');
+        const url = 'https://www.google.com/search?q=' + encodeURIComponent(name);
+        ReactDOM.render(<a href={url}>{name}</a>.mountPoint);
+      }
+    }
+  });
+  document.registerElement('x-seach',{prototype:proto});
+	</script>
+
+</body>
+
+</html>
