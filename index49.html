@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>高阶组件</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+  <div id="root"></div>
+  <script type="text/babel">
+  /*-----使用高阶组件（HOC）解决横切关注点-----*/
+  //例如，假设你有一个CommentList组件，该组件从外部数据源订阅数据并渲染评论列表
+  class CommentList extends React.Component{
+    constructor(props){
+      super(props);
+      this.handleChange = this.handleChange.bind(this);
+      this.state ={
+        comments:DataSource.getComments();
+      };
+    }
+    componentDidMount(){
+      DataSource.addChangeListener(this.handleChange);
+    }
+    componentWillUnmount(){
+      DataSource.removeChangeListener(this.handleChange);
+    }
+    handleChange(){
+      this.setState({
+        comments:DataSource.getComments()
+      });
+    }
+    render(){
+      return(
+        <div>
+          {this.state.comments.map((comment) => (
+            <Comment comment={comment} key={comment.id} />
+          ))}
+        </div>
+      );
+    }
+  }
+
+  //然后，你又写了一个订阅单个博客文章的组件，该组件遵循类似的模式
+  class BlogPost extends React.Component{
+    constructor(props){
+      super(props);
+      this.handleChange = this.handleChange.bind(this);
+      this.state = { 
+        blogPost:DataSource.getBlogPost(props.id)
+      };
+    }
+    componentDidMount(){
+      DataSource.addChangeListener(this.handleChange);
+    }
+    componentWillUnmount(){
+      DataSource.removeChangeListener(this.handleChange);
+    }
+    handleChange(){
+      this.setState({
+        blogPost:DataSource.getBlogPost(this.props.id)
+      });
+    }
+    render(){
+      return <TextBlock text={this.state.blogPost} />;
+    }
+  }
+
+  //我们可以写一个创建组件的函数，创建的组件类似CommonList和BlogPost一样订阅到DataSource。该函数接受它的参数之一作为一个子组件，子组件又接受订阅的数据作为一个属性(prop)。
+  //让我们称这个函数为withSubscription
+  const CommentListWithSubscription = withSubscription(
+    CommentList,
+    (DataSource) => DataSource.getComments()
+  );
+  const BlogPostWithSubscription = withSubscription(
+    BlogPost,
+    (DataSource,props) => DataSource.getBlogPost(props.id)
+  );
+
+  //当渲染 CommentListWithSubscription 和 BlogPostWithSubscription 时, 会向CommentList 和 BlogPost 传递一个 data 属性，该 data属性带有从 DataSource 检索的最新数据
+  function withSubscription(WrappedComponent,selectData){
+    return class extends React.Component{
+      constructor(props){
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+        this.state = {
+          data:selectData(DataSource,props)
+        };
+      }
+      componentDidMount(){
+        DataSource.addChangeListener(this.handleChange);
+      }
+      componentWillUnmount(){
+        DataSource.removeChangeListener(this.handleChange);
+      }
+      handleChange(){
+        this.setState({
+          data:selectData(DataSource,this.props)
+        });
+      }
+      render(){
+        return <WrappedComponent data={this.state.data} {...this.props} />
+      }
+    };
+  }
+
+
+  /*-----不要改变原始组件，使用组合-----*/
+
+  //不要在高阶组件内修改一个组件的原型（或以其它方式修改组件）。下面示例有一些问题。首先就是，输入组件不能独立于增强型组件（enhanced component）被重用。
+  //更致命的是，如果你在EnhancedComponent上应用另一个高阶组件，同样也去改变componentWillReceiveProps，第一个高阶组件的功能就会被覆盖。
+  //这样的高阶组件对没有生命周期方法的函数式组件也是无效的。
+  function logProps(InputComponent){
+    InputComponent.prototype.componentWillReceiveProps = function(nextProps){
+      console.log('Current props: ',this.props);
+      console.log('Next props: ',nextProps);
+    };
+    return InputComponent;
+  }
+  const EnhancedComponent = logProps(InputComponent);
+
+  //与修改组件相反，高阶组件应该使用组合技术，将输入组件包裹到一个容器组件中
+  //这个高阶组件和上面那个更改型版本有着同样的功能，但却避免了潜在的冲突。它对类组件和函数式组件适用性同样好。而且，因为它是纯函数，它是可组合的，可以和其它高阶组件，甚至和它自身组合。
+  function logProps(WrappedComponent){
+    return class extends React.Component{
+      componentWillReceiveProps(nextProps){
+        console.log('Current props:',this.props);
+        console.log('Next props:',nextProps);
+      }
+      render(){
+        return <WrappedComponent {...this.props} />;
+      }
+    }
+  }
+
+
+  /*-----约定：贯穿传递不相关props属性给被包裹的组件-----*/
+  render(){
+    // 过滤掉专用于这个阶组件的props属性，
+    // 不应该被贯穿传递
+    const {extraProp,...passThroughProps} = this.props;
+    // 向被包裹的组件注入props属性，这些一般都是状态值或实例方法
+    const injectedProp = someStateOrInstanceMethod;
+     // 向被包裹的组件传递props属性
+    return(
+      <WrappedComponent
+       injectedProp={injectedProp}
+       {...passThroughProps}
+      />
+    );
+  }
+
+
+  /*-----约定：最大化的组合性-----*/
+  //并不是所有的高阶组件看起来都是一样的。有时，它们仅接收单独一个参数，即被包裹的组件
+  const NavbarWithRouter = withRouter(Navbar);
+
+  //一般而言，高阶组件会接收额外的参数。在下面这个来自Relay的示例中，一个config对象用于指定组件的数据依赖
+  const CommentWithRelay = Relay.createContainer(Comment,config);
+  //高阶组件最常见签名如下所示
+
+  //换句话说，connect 是一个返回高阶组件的高阶函数
+  const ConnectedComment = connect(commentSelector,commentActiones)(Comment);
+  // connect是一个返回函数的函数（译者注：就是个高阶函数）
+  const enhance = connect(commentListSelector,commentListActions);
+  // 返回的函数就是一个高阶组件，该高阶组件返回一个组件被连接
+  // 到Redux store
+  const ConnectedComment = enhance(CommentList);
+
+  // 不要这样做……
+  const EnhancedComponent = withRouter(connect(commentSelector)(WrappedComponent))
+  // ……你可以使用一个函数组合工具
+  // compose(f, g, h) 和 (...args) => f(g(h(...args)))是一样的
+  const enhance = compose(
+    // 这些都是单独一个参数的高阶组件
+    withRouter,
+    connect(commentSelector)
+  )
+  const EnhancedComponent = enhance(WrappedComponent)
+
+   /*-----约定：包装显示名字以便于调试-----*/
+   //为了便于调试，可以选择一个显示名字，传达它是一个高阶组件的结果,最常用的技术是包裹显示名字给被包裹的组件。
+   //所以，如果你的高阶组件名字是 withSubscription，且被包裹的组件的显示名字是 CommentList，那么就是用 WithSubscription(CommentList)这样的显示名字
+   function withSubscription(WrappedComponent){
+     class WithSubscription extends React.Component{}
+     WithSubscription.displayName = `WithSubscription(${getDisplayName(WrappedComponent)})`;
+     return WithSubscription;
+   }
+   function getDisplayName(WrappedComponent){
+     return WrappedComponent.displayName || WrappedComponent.name || 'Component'; 
+   }
+
+
+   /*-----不要在render方法内使用高阶组件-----*/
+   //React的差分算法（称为协调）使用组件标识确定是否更新现有的子树或扔掉它并重新挂载一个新的。
+   //如果render方法返回的组件和前一次渲染返回的组件是完全相同的(===)，React就递归地更新子树，这是通过差分它和新的那个完成。如果它们不相等，前一个子树被完全卸载掉。
+   render(){
+     // 每一次渲染，都会创建一个新的EnhancedComponent版本
+     // EnhancedComponent1 !== EnhancedComponent2
+     const EnhancedComponent = enhance(MyComponent);
+     // 那引起每一次都会使子对象树完全被卸载/重新加载
+     return <EnhancedComponent />
+   }
+   //这里产生的问题不仅仅是性能问题——还有，重新加载一个组件会引起原有组件的状态和它的所有子组件丢失
+
+
+   /*-----必须将静态方法做拷贝-----*/
+
+   //当你应用一个高阶组件到一个组件时，尽管，原始组件被包裹于一个容器组件内，也就意味着新组件会没有原始组件的任何静态方法
+   // 定义静态方法
+   WrappedComponent.staticMethod = function(){}
+   // 使用高阶组件
+   const EnhancedComponent = enhance(WrappedComponent);
+   // 增强型组件没有静态方法
+   typeof EnhancedComponent.staticMethod === 'undefined' //true
+
+   //为解决这个问题，在返回之前，将原始组件的方法拷贝给容器
+   function enhance(WrappedComponent){
+     class Enhance extends React.Component{}
+     // 必须得知道要拷贝的方法 :(
+     Enhance.staticMethod = WrappedComponent.staticMethod;
+     return Enhance;
+   }
+	</script>
+
+</body>
+
+</html>
