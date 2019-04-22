@@ -13,72 +13,178 @@
 
   <div id="root"></div>
   <script type="text/babel">
-  function logProps(WrappedComponent) {
-  class LogProps extends React.Component {
-    componentDidUpdate(prevProps) {
-      console.log('old props:', prevProps);
-      console.log('new props:', this.props);
+/*-----什么是Refs-----*/
+  /*我们在日常写React代码的时候，一般情况是用不到Refs这个东西，因为我们并不直接操作底层DOM元素，而是在render函数里去编写我们的页面结构，由React来组织DOM元素的更新。
+凡事总有例外，总会有一些很奇葩的时候我们需要直接去操作页面的真实DOM，这就要求我们有直接访问真实DOM的能力，而Refs就是为我们提供了这样的能力。
+看这个名字也知道，Refs其实是提供了一个对真实DOM（组件）的引用，我们可以通过这个引用直接去操作DOM（组件）*/
+
+/*-----为什么会用到这个-----*/
+  //简单的来说就是处理DOM元素的focus，文本的选择或者媒体的播放等，以及处罚强制动画或者同第三方DOM库集成的时候。
+
+/*-----怎么用-----*/
+
+  //React V16版本之前
+  //我们一般都是通过一个回调函数的方式，把当前组件的DOM绑定到一个实例变量上，像下面这样
+  class AutoFocusTextInput extends React.Component{
+    constructor(props){
+      super(props);
+      this.textInput = null;
     }
-
-    render() {
-      return <WrappedComponent {...this.props} />;
+    componentDidMount(){
+      this.textInput.focusTextInput();
     }
-  }
-
-  return LogProps;
-}
-class FancyButton extends React.Component {
-  focus() {
-    // ...
-  }
-
-  // ...
-}
-
-// Rather than exporting FancyButton, we export LogProps.
-// It will render a FancyButton though.
-export default logProps(FancyButton);
-const ref = React.createRef();
-
-// The FancyButton component we imported is the LogProps HOC.
-// Even though the rendered output will be the same,
-// Our ref will point to LogProps instead of the inner FancyButton component!
-// This means we can't call e.g. ref.current.focus()
-<FancyButton
-  label="Click Me"
-  handleClick={handleClick}
-  ref={ref}
-/>;
-function logProps(Component) {
-  class LogProps extends React.Component {
-    componentDidUpdate(prevProps) {
-      console.log('old props:', prevProps);
-      console.log('new props:', this.props);
-    }
-
-    render() {
-      const {forwardedRef, ...rest} = this.props;
-
-      // Assign the custom prop "forwardedRef" as a ref
-      return <Component ref={forwardedRef} {...rest} />;
+    render(){
+      return(
+        <CustomTextInput ref={ele => {this.textInput = ele}} />
+      );
     }
   }
+  /*在上面的代码中，我们先声明一个值为null的textInput变量，然后在ref中以回调的方式将组件DOM赋值给textInput。
+  然后就可以通过 this.textInput.focus()这样的性质来直接调用CustomTextInput这个组件的实例方法。*/
 
-  // Note the second param "ref" provided by React.forwardRef.
-  // We can pass it along to LogProps as a regular prop, e.g. "forwardedRef"
-  // And it can then be attached to the Component.
-  function forwardRef(props, ref) {
-    return <LogProps {...props} forwardedRef={ref} />;
+  //但是这个方式有以下两个不太好：
+  /*每次组件重新渲染的时候，行内函数都会执行两次，第一次的ele的值为空，第二次才为真正的DOM对象。
+  因为在每次渲染中React都会创建一个新的函数实例。因此，React 需要清理旧的 ref 并且设置新的。
+  通过将 ref 的回调函数定义成类的绑定函数的方式可以避免上述问题，*/
+  /*如果我们想要将一个子组件的ref传递给父组件，可能会有点麻烦，虽然通过一个特殊的prop属性可以做到，但是感觉有点不太正规。。。*/
+
+  //React V16 版本后
+  //React V16版本新增一个API：React.createRef(); 通过这个API，我们可以先创建一个ref变量，然后再将这个变量赋值给组件声明中ref属性就好了。
+  class CustomTextInput extends React.Component{
+    constructor(props){
+      super(props);
+      this.textInput = React.createRef();
+      this.focusTextInput = this.focusTextInput.bind(this);
+    }
+    focusTextInput(){
+      this.textInput.current.focus();
+    }
+    render(){
+      return(
+        <div>
+          <input type="text" ref={this.textInput} />
+          <input type="button" value="Focus the text input" onClick={this.focusTextInput} />
+        </div>
+      )
+    }
+  }
+  /*在上面的代码中，我们先通过 React.createRef();创建一个ref，并赋值给组件属性textInput（this.textInput），
+  然后在render函数中通过ref={this.textInput}的方式将ref和input这个真实DOM联系起来， 
+  这样就可以通过 this.textInput.current.focus();的方式来直接操作input元素的方法。*/
+
+/*-----不同之处-----*/
+  //在V16版本前，我们可以直接通过变量访问元素的方法，在V16后，我们需要通过 this.textInput.current，即真实的DOM是通过current属性来引用的。
+  //如果通过 createRef（）这个API赋值给组件的ref，那么引用的就是组件实例；如果是DOM元素，那引用的自然的就是DOM元素了。。
+
+/*-----传递Refs-----*/ 
+  //前面我们说到，在V16版本之前，我们想要父组件拿到子组件的ref，需要通过一些特殊的方法，V16版本之后，React提供了一种原生的方式来完成这种操作。
+  //这就涉及到React新增的另一个API： React.forwardRef（）， 通过接受一个函数，来传递refs，具体如下
+  const FancyButton = React.forwardRef((props,ref) => (
+    <button ref={ref} className="FancyButton">
+      {props.children}
+    </button>
+  ));
+  const ref = React.createRef();
+  <FancyButton ref={ref}>Click me</FancyButton>;
+  /*首先我们通过React.createRef();创建一个ref变量，然后在FancyButton属性中通过 ref={ref}的方式把这个ref和组件关联起来。
+目前为止，如果FancyButton 是一个通过class或者函数声明的组件，那么就到此为止，我们可以说 ref变量的current属性持有对 FancyButton组件实例的引用。
+不幸的是，FancyButton经过了 React.forwardRef的处理， 这个API接受两个参数，第二个参数就是ref，然后通过 <button ref={ref}>把ref绑定到button元素上，这样ref.current的引用就是button元素这个DOM对象了。。。 */ 
+
+ /*上面的有点绕，简单来说，就是我们创建一个引用，本来是给外面的FancyButton组件的，但是因为React.forwardRef的处理，这个引用被传递给了内部的button元素。
+ 这样ref.current的引用由本来的FancyButton实例传递到了button元素本身。*/
+
+
+/*-----在HOC组件中的应用-----*/ 
+  //HOC（higher-order components）高阶组件，简单的说，就是通过组件包裹的方式来提到代码复用，高阶组件就是一个函数，且该函数接受一个组件作为参数，并返回一个新的组件
+  //以下是一个生成高阶组件的函数,logProps组件用于在每次数据更新前后记录props中的数据
+  function logProps(WrappedComponent){
+    class LogProps extends React.Component{
+      componentDidUpdate(prevProps){
+        console.log('old props:',prevProps);
+        console.log('new props:',this.props);
+      }
+      render(){
+        return <WrappedComponent {...this.props} />;
+      }
+    }
+    return LogProps;
+  }
+  //logProps是函数，接受一个组件参数，返回一个包裹参数组件的logProps组件
+  //下面是用法
+  class FancyButton extends React.Component{
+    focus(){
+
+    }
+  }
+  export default logProps(FancyButton);
+  //我们先声明一个FancyButton的组件，然后将其作为参数传入logProps函数，最后得到的其实是一个LogProps组件
+
+  //接下来我们使用refs
+  import FancyButton from './FancyButton';
+  const ref = React.createRef();
+  <FancyButton
+    label="Click me"
+    handleClick={handleClick}
+    ref={ref}
+  ></FancyButton>;
+  //通过import引入FancyButton（其实引入的是LogProps组件）然后createRef并指向FancyButton。 本意是希望引入真正的FancyButton组件，实际上引用的是 外层包裹组件LogProps组件
+
+  //我们使用Forwarding Refs对高阶组件进行简单的改造即可解决这个问题
+  function logProps(Component){
+    class LogProps extends React.Component{
+      componentDidUpdate(prevProps){
+        console.log('old porps:',prevProps);
+        console.log('new props:',this.props);
+      }
+      render(){
+        const {forwardedRef,...rest} = this.props;
+        // 通过forwardedRef参数传递ref的值
+        return <Component ref={forwardedRef}{...rest} />;
+      }
+    }
+    //然后使用 React.forwardRef 来包装创建 LogProps组件的实例
+    //注意这里使用 forwardedRef 来传递 父组件的 ref
+    return React.forwardRef((props,ref) => {
+      return <LogProps {...props} forwardedRef={ref} />;
+    });
+  }
+  //如面的代码所示，我们修改了高阶组件logProps函数的实现方式，在内部组件LogProps的render方法中，给被包裹组件（作为参数传入的组件）添加了来自props的ref。
+
+  //最终返回的也是一个React.forwardRef处理过的组件，这个组件将ref传递到内部的props中去。
+
+  //这样，但我们通过logProps(FancyButton)函数调用的时候，其实返回的是一个经过React.forwardRef处理的组件， 当通过
+  <FancyButton
+    label="Click me"
+    handleClick={handleClick}
+    ref={ref}
+  />;
+  /*去添加ref的时候， 这个ref其实直接添加到了内部的LogProps组件的forwardedRef属性上，然后在LogProps组件内部，
+  又通过props属性的方式被赋值了 被包裹组件（作为参数的组件，也就是FancyButton组件）。这个传递其实经过了三次。。。。*/
+
+/*-----开发调试组件名称显示-----*/
+  //如果我们不进行任何调整，下面的代码在调试工具中输出的组件名称为："ForwardRef(MyComonent)"：
+  const WrappedComponent = React.forwardRef(
+    function myFunction(props,ref){
+      return <LogProps {...props} forwardedRef={ref} />
+    }
+  )
+
+  //可以通过displayName来设定想要现实的名字
+  function logProps(Component){
+    class LogProps extends React.Component{
+
+    }
+    //先定义返回的高阶组件方法
+    function forwardRef(props,ref){
+      return <LogProps {...props} forwardedRef={ref} />;
+    }
+    //然后设定这个组件的名称
+    const name = Component.displayName || Component.name;
+    forwardRef.displayName = 'logProps($(name))';
+    //构建组件
+    return React.forwardRef(forwardRef);
   }
 
-  // These next lines are not necessary,
-  // But they do give the component a better display name in DevTools,
-  // e.g. "ForwardRef(logProps(MyComponent))"
-  const name = Component.displayName || Component.name;
-  forwardRef.displayName = `logProps(${name})`;
-
-  return React.forwardRef(forwardRef);
-}
 	</script>
 
 </body>
