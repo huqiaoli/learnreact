@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>与第三方库协同</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+  <div id="root"></div>
+  <script type="text/babel">
+  //与 DOM 节点操作类插件结合
+  class SomePlugin extends React.Component{
+    componentDidMount(){
+      this.$el =$(this.el);
+      this.$el.somePlugin();
+    }
+    componentWillUnmount(){
+      this.$el.somePlugin('destroy');
+    }
+    render(){
+      return <div ref={el => this.el = el} />;
+    }
+  }
+
+  //集成 jQuery Chosen 插件
+  function Example(){
+    return(
+      <Chosen onChange={value => console.log(value)}>
+        <option>vanilla</option>
+        <option>chocolate</option>
+        <option>strawberry</option>
+      </Chosen>
+    );
+  }
+  class Chosen extends React.Component{
+    componentDidMount(){
+      this.$el = $(this.el);
+      this.$el.chosen();
+      this.handleChange = this.handleChange.bind(this);
+      this.$el.on('change',this.handleChange);
+    }
+    componentDidUpdate(prevProps){
+      if(prevProps.children !== this.props.children){
+        this.$el.trigger("chosen:updated");
+      }
+    }
+    componentWillUnmount(){
+      this.$el.off('change',this.handleChange);
+      this.$el.chosen('destroy');
+    }
+    handleChange(e){
+      this.props.onChange(e.target.vlaue);
+    }
+    render(){
+      return(
+        <div>
+          <select className="chosen-select" ref={el => this.el = el}>
+            {this.props.children}
+          </select>
+        </div>
+      );
+    }
+  }
+
+
+  //在 React 中使用其他引擎加载页面
+  //在 React 中使用“字符串替换”类的库
+
+  //比如，这一段 jQuery 代码……
+  $('#container').html('<button id="btn">say hello</button>');
+  $('#btn').click(function(){
+    alert('hello');
+  });
+  //……可以改写成这样的 React 组件
+  function Button(){
+    return <button id="btn">say hello</button>;
+  }
+  ReactDOM.render(
+    <Button />,
+    document.getElementById('container'),
+    function(){
+      $('#btn').click(function(){
+        alert('hello');
+      });
+    }
+  )
+  //那么现在开始，你就可以在这个组件中应用 React 的思路，加入更多的逻辑代码。
+  //比如，习惯上来说组件是不应该依赖 ID 的，因为这一个组件可能会显示很多次。
+  //因此，我们需要使用 React 事件系统 来给 <button> 添加点击事件的回调
+  function Button(props){
+    return <button onClick={props.onClick}>say hello</button>;
+  }
+  function HelloButton(){
+    function handleClick(){
+      alert('hello');
+    }
+    return <Button onClick={handleClick} />;
+  }
+  ReactDOM.render(
+    <HelloButton />,
+    document.getElementById('root')
+  );
+
+
+  //在 React 中使用 Backbone 的视图
+  function Paragraph(props){
+    return <p>{props.text}</p>
+  }
+  const ParagraphView = Backbone.View.extend({
+    render(){
+      const text = this.model.get('text');
+      ReactDOM.render(<Paragraph text={text} />,this.el);
+      return this;
+    },
+    remove(){
+      ReactDOM.unmountComponentAtNode(this.el);
+      Backbone.View.prototype.remove.call(this);
+    }
+  });
+	</script>
+
+</body>
+
+</html>
