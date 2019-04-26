@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>简易评论应用</title>
+	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+</head>
+
+<body>
+
+  <div id="root"></div>
+  <script type="text/babel">
+  // 顶层CommentBox
+  //   评论列表CommentList
+  //       单条评论Comment
+  //   评论表单CommentForm
+  var data = [
+  {author: "作者 1", text: "评论 1"},
+  {author: "作者 2", text: "*评论 2*"}
+];
+class Comment extends React.Component{
+  render(){
+        return (
+            <div className="comment">
+                <h2 className = 'commentAuthor'>
+                    {this.props.author}
+                </h2>
+                {this.props.children}
+            </div>
+        );
+    }
+}
+class CommentList extends React.Component{
+  render() {
+    var commentNodes = this.props.data.map(function (comment,index) {
+      return (
+        <Comment author={comment.author} key={index}>
+          {comment.text}
+        </Comment>
+      );
+    });
+    return (
+      <div className="commentList">
+        {commentNodes}
+      </div>
+    );
+  }
+}
+class CommentForm extends React.Component{
+  render() {
+    return (
+      <div className="commentForm">
+        Hello world! I am a CommentForm.
+      </div>
+    );
+  }
+}
+class CommentBox extends React.Component{
+  render() {
+    return (
+      <div className="commentBox">
+        <h1>Comments</h1>
+        <CommentList data={data}/>
+        <CommentForm />
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<CommentBox />,document.getElementById('root'));
+	</script>
+
+</body>
+
+</html>
