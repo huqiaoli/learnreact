@@ -110,7 +110,30 @@ ReactDOM.render(
 4、组件的属性可以在组件类的 this.props 对象上获取，比如 name 属性就可以通过 this.props.name 读取；
 	  
 5、添加组件属性，有一个地方需要注意，就是 class 属性需要写成 className ，for 属性需要写成 htmlFor
-## 6.状态state
+
+## 6.this.props.children
+为什么用React.Children.map(props.children, () => )而不是props.children.map(() => )
+
+不能保证props.children将是一个数组。当children不是数组时，使用children.map会引发错误
+
+```
+<Parent>
+  <h1>Welcome.</h1>
+</Parent> //Uncaught TypeError: this.props.children.map is not a function
+```
+如果我们尝试使用props.children.map它来映射孩子，父母内部会抛出错误，因为它props.children是一个对象而不是一个数组
+
+props.children如果有多个子元素（如此），则React只会生成一个数组
+
+```
+<Parent>
+  <h1>Welcome.</h1>
+  <h2>props.children will now be an array</h2>
+</Parent>
+```
+React.Children提供了处理this.props.children的实用程序，如果children是一个键控片段或数组，它将被遍历。他的实现似乎比使用的Array.prototype.map（数组）更多
+
+## 7.状态state
 - 构造函数是唯一能够初始化 this.state 的地方；
 ##### 1、不要直接更新状态
 例如，此代码不会重新渲染组件：
@@ -193,7 +216,7 @@ componentDidMount() {
 - Props是组件实例的标签属性的集合；它可以接收组件外传进来的值，在组件内部是不可修改Props的属性的，在组件外部可以通过标签属性给它赋值，所以可以用来从组件外部给组件内部传值；
 - State是组件实例的内部数据的集合；在组件内部是可以更改State的属性的值，且每次更改后，都会触发render方法渲染组件；
 - 组件的标签属性在使用前不用先定义；而组件的内部数据State的属性在使用前需要先通过getInitialState方法定义；
-## 7.事件处理
+## 8.事件处理
 - React事件绑定属性的命名采用驼峰式写法，而不是小写。
 - 如果采用 JSX 的语法，则需要传入一个函数作为事件处理函数，而不是一个字符串(DOM元素的写法)；
 - 不能使用返回 false 的方式阻止默认行为，必须明确的使用 preventDefault 来阻止默认行为；
@@ -234,7 +257,7 @@ this.handleClick = this.handleClick.bind(this);
 
 函数：**handleclick(传过来的参数，event)**
 
-## 8.条件渲染
+## 9.条件渲染
 ###### 通过条件渲染页面：
 
 首先建一个函数，来根据不同的情况返回不同的值，然后建一个类组建，先进行变量的初始化，对变量进行操作，在组件内进行小的渲染，最后通过 ReactDOM.render() 渲染到页面上。
@@ -262,7 +285,7 @@ this.setState((prevState, props) => ({
     //do something here
 }));
 ```
-##  9.key
+##  10.key
 ###### key的使用需要注意一下几点：
 - 数组中的每一项都要有固定的key，以便React区分哪些元素变化(增加/修改/移除),它只是作为React自己识别，并不会传递到组件上
 - 一个array创建的elements列表中，item的key应该是独一无二的。
@@ -271,7 +294,7 @@ this.setState((prevState, props) => ({
 - key需要在列表范围内保证唯一性：同一个数组中的key需要保证唯一性，但不同数组中的key无所谓
 - key不会作为props传入组件：可以认为key是React在JSX中的保留字，你不能用它来向组件传递数据而应该改用其他词
 
-## 10.表单
+## 11.表单
 ##### 状态属性
 表单元素有这么几种属于状态的属性：
 - value，对应 <input> 和 <textarea> 所有
@@ -335,9 +358,9 @@ handleChange: function(event) {
 ```
 你可以通过传递一个数组指定多个选中项：<select multiple={true} value={['B', 'C']}>
 
-## 11.状态提升
+## 12.状态提升
 React中的状态提升概括来说,就是将多个组件需要共享的状态提升到它们最近的父组件上.在父组件上改变这个状态然后通过props分发给子组件.
-## 12.组合 vs 继承
+## 13.组合 vs 继承
 在 JSX 中，开始标签和结束标签之间的子代内容会作为props.children传递；开始标签和结束标签之间可以是任何类型的东西，只要该组件在 React 渲染前能将其转换成 React 能够理解的东西即可；
 例如，可以传递如下类型的子代：
 
