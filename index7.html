@@ -14,21 +14,36 @@
 	<div id="root"></div>
 	<script type="text/babel">
 	//定义一个组件最简单的方式是使用JavaScript函数
-		// function Welcome(props){
-		// 	return <h1>hello,{props.name}</h1>
-		// }
+	// function Welcome(props){
+	// 	return <h1>hello,{props.name}</h1>
+	// }
+
 	//用 ES6 class 来定义一个组件
-		class Welcome extends React.Component{
-			render(){
-				return <h1>hello,{this.props.name}</h1>//3.Welcome组件将<h1>Hello, Sara</h1>元素作为结果返回
-			}
+	// class Welcome extends React.Component{
+	// 	render(){
+	// 		return <h1>hello,{this.props.name}</h1>//3.Welcome组件将<h1>Hello, Sara</h1>元素作为结果返回
+	// 	}
+	// }
+	//React元素也可以是用户自定义的组件
+	// const element=<Welcome name='Sara'/>//2.React将{name: 'Sara'}作为props传入并调用Welcome组件
+	// ReactDOM.render(//4.React DOM将DOM更新为<h1>Hello, Sara</h1>
+	// 	element,//1.对<Welcome name="Sara" />元素调用了ReactDOM.render()方法
+	// 	document.getElementById('root')
+	// )
+	
+	class HelloMessage extends React.Component{
+		render(){
+			return <h1>{this.props.name}</h1>
 		}
-		//React元素也可以是用户自定义的组件
-		const element=<Welcome name='Sara'/>//2.React将{name: 'Sara'}作为props传入并调用Welcome组件
-		ReactDOM.render(//4.React DOM将DOM更新为<h1>Hello, Sara</h1>
-			element,//1.对<Welcome name="Sara" />元素调用了ReactDOM.render()方法
-			document.getElementById('root')
-		)
+	}
+	ReactDOM.render(
+		<HelloMessage name='john' />,
+		document.getElementById('root')
+	)
+	//上面代码中，变量 HelloMessage 就是一个组件类。模板插入 <HelloMessage /> 时，会自动生成 HelloMessage 的一个实例。
+	//所有组件类都必须有自己的 render 方法，用于输出组件
+	//组件的用法与原生的 HTML 标签完全一致，可以任意加入属性，比如 <HelloMessage name="John"> ，就是 HelloMessage 组件加入一个 name 属性，值为 John。
+	//组件的属性可以在组件类的 this.props 对象上获取，比如 name 属性就可以通过 this.props.name 读取
 	</script>
 
 </body>
