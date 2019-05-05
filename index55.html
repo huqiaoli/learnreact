@@ -13,27 +13,77 @@
 
   <div id="root"></div>
   <script type="text/babel">
+  //object React.Children.map(object children, function fn [, object context])
+  // 使用方法：
+  // React.Children.map(this.props.children, function (child) {
+  //     return <li>{child}</li>;
+  // })
+  // 其他方法
+  // this.props.children.forEach(function (child) {
+  //     return <li>{child}</li>
+  // })
+
+  /*-----操作children-----*/
+
+  //循环
   class IgnoreFirstChild extends React.Component {
-  render() {
-    const children = this.props.children
-    return (
-      <div>
-        {this.props.children.map((child, i) => {
-          // Ignore the first child
-          if (i < 1) return
-          return child
-        })}
-      </div>
-    )
+    render() {
+      const children = this.props.children
+      return(
+        <div>
+          {React.Children.map(children,(child,i) => {
+            // this.props.children.map((child,i) => {
+            if (i < 1) return
+            return child
+          })}
+        </div>
+      )
+    }
   }
-}
-ReactDOM.render(
-  <IgnoreFirstChild>
-  <h1>First</h1>
-  <h1>Second</h1>
-</IgnoreFirstChild>,
-document.getElementById('root')
-)
+  ReactDOM.render(
+    <IgnoreFirstChild>
+      {() => <h1>First</h1>}
+    </IgnoreFirstChild>,
+    document.getElementById('root')
+  )
+  //在这种情况下，我们也可以使用 this.props.children.map 的方法。this.props.children 的值有三种可能：如果当前组件没有子节点，它就是 undefined ;如果有一个子节点，数据类型是 object ；如果有多个子节点，数据类型就是 array 
+  //但要是有人讲一个函数作为child传递过来将会发生什么呢？this.props.children 会是一个函数而不是一个数组，接着我们就会产生一个error:this.props.children.map is not a function
+  //然而使用 React.Children.map 函数，无论什么都不会报错
+
+
+  //计数
+  //因为this.props.children 可以是任何类型的，检查一个组件有多少个children是非常困难的。
+  //天真的使用 this.props.children.length ，当传递了字符串或者函数时程序便会中断。
+  //假设我们有个child："Hello World!" ，但是使用 .length 的方法将会显示为12
+  class ChildrenCounter extends React.Component {
+    render() {
+      return <p>{React.Children.count(this.props.children)}</p>
+    }
+  }
+  ReactDOM.render(
+    <ChildrenCounter>
+      {() => <h1>First!</h1>}
+      Second!
+      <p>Third!</p>
+    </ChildrenCounter>,
+    document.getElementById('root')
+  )
+
+
+  //转换为数组
+  class Sort extends React.Component {
+    render() {
+      const children = React.Children.toArray(this.props.children)
+      return <p>{children.sort().join(' ')}</p>
+    }
+  }
+  ReactDOM.render(
+    <Sort>
+      {'bananas'}{'oranges'}{'apples'}
+    </Sort>,
+    document.getElementById('root')
+  )
+
 	</script>
 
 </body>
