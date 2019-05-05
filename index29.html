@@ -13,29 +13,33 @@
 
 	<div id="root"></div>
   <script type="text/babel">
-  // class HelloMessage extends React.Component{
-  //   constructor(props){
-  //     super(props);
-  //     this.state = {value:'hello'};
-  //     this.handleChange = this.handleChange.bind(this);
-  //   }
-  //   handleChange(event){
-  //     this.setState({value:event.target.value});
-  //   }
-  //   render(){
-  //     var value = this.state.value;
-  //     return(
-  //       <div>
-  //         <input type="text" value={value} onChange={this.handleChange} />
-  //         <h4>{value}</h4>
-  //       </div>
-  //     )
-  //   }
-  // }
-  // ReactDOM.render(
-  //   <HelloMessage />,
-  //   document.getElementById('root')
-  // )
+  //用户在表单填入的内容，属于用户跟组件的互动，所以不能用 this.props 读取
+  //this.props 表示那些一旦定义，就不再改变的特性，而 this.state 是会随着用户互动而产生变化的特性
+  class HelloMessage extends React.Component{
+    constructor(props){
+      super(props);
+      this.state = {value:'hello'};
+      this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange(event){
+      this.setState({value:event.target.value});
+    }
+    render(){
+      var value = this.state.value;
+      return(
+        <div>
+          <input type="text" value={value} onChange={this.handleChange} />
+          <h4>{value}</h4>
+        </div>
+      )
+    }
+  }
+  ReactDOM.render(
+    <HelloMessage />,
+    document.getElementById('root')
+  )
+  //上面代码中，文本输入框的值，不能用 this.props.value 读取，而要定义一个 onChange 事件的回调函数，通过 event.target.value 读取用户输入的值
+  
 
   //在以下实例中我们将为大家演示如何在子组件上使用表单。 onChange 方法将触发 state 的更新并将更新的值传递到子组件的输入框的 value 上来重新渲染界面。需要在父组件通过创建事件句柄 (handleChange) ，并作为 prop (updateStateProp) 传递到你的子组件上
   //根据上面实例在子组件上使用表单，参考 14 State 和 Props（index14.html）
