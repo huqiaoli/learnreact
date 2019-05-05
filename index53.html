@@ -13,64 +13,64 @@
 
   <div id="root"></div>
   <script type="text/babel">
-  // 顶层CommentBox
-  //   评论列表CommentList
-  //       单条评论Comment
-  //   评论表单CommentForm
+  //顶层CommentBox
+  //评论列表CommentList
+  //单条评论Comment
+  //评论表单CommentForm
   var data = [
-  {author: "作者 1", text: "评论 1"},
-  {author: "作者 2", text: "*评论 2*"}
-];
-class Comment extends React.Component{
-  render(){
+    {author: "作者 1", text: "评论 1"},
+    {author: "作者 2", text: "*评论 2*"}
+  ];
+  class Comment extends React.Component{
+    render(){
+          return (
+              <div className="comment">
+                  <h2 className = 'commentAuthor'>
+                      {this.props.author}
+                  </h2>
+                  {this.props.children}
+              </div>
+          );
+      }
+  }
+  class CommentList extends React.Component{
+    render() {
+      var commentNodes = this.props.data.map(function (comment,index) {
         return (
-            <div className="comment">
-                <h2 className = 'commentAuthor'>
-                    {this.props.author}
-                </h2>
-                {this.props.children}
-            </div>
+          <Comment author={comment.author} key={index}>
+            {comment.text}
+          </Comment>
         );
-    }
-}
-class CommentList extends React.Component{
-  render() {
-    var commentNodes = this.props.data.map(function (comment,index) {
+      });
       return (
-        <Comment author={comment.author} key={index}>
-          {comment.text}
-        </Comment>
+        <div className="commentList">
+          {commentNodes}
+        </div>
       );
-    });
-    return (
-      <div className="commentList">
-        {commentNodes}
-      </div>
-    );
+    }
   }
-}
-class CommentForm extends React.Component{
-  render() {
-    return (
-      <div className="commentForm">
-        Hello world! I am a CommentForm.
-      </div>
-    );
+  class CommentForm extends React.Component{
+    render() {
+      return (
+        <div className="commentForm">
+          Hello world! I am a CommentForm.
+        </div>
+      );
+    }
   }
-}
-class CommentBox extends React.Component{
-  render() {
-    return (
-      <div className="commentBox">
-        <h1>Comments</h1>
-        <CommentList data={data}/>
-        <CommentForm />
-      </div>
-    );
+  class CommentBox extends React.Component{
+    render() {
+      return (
+        <div className="commentBox">
+          <h1>Comments</h1>
+          <CommentList data={data}/>
+          <CommentForm />
+        </div>
+      );
+    }
   }
-}
 
-ReactDOM.render(<CommentBox />,document.getElementById('root'));
+  ReactDOM.render(<CommentBox />,document.getElementById('root'));
 	</script>
 
 </body>
