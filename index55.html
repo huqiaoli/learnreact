@@ -26,6 +26,8 @@
   /*-----操作children-----*/
 
   //循环
+  //React.Children.map()有些类似Array.prototype.map()。如果children是数组则此方法返回一个数组，如果是null或undefined则返回null或undefined。
+  //第一参数是children，即示例中的IgnoreFirstChild组件里的() => <h1>First</h1>函数。第二个参数是fucntion，function的参数第一个是遍历的每一项，第二个是对应的索引
   class IgnoreFirstChild extends React.Component {
     render() {
       const children = this.props.children
@@ -83,7 +85,7 @@
     </Sort>,
     document.getElementById('root')
   )
-
+ //如果不用React.Children.toArray()方法，直接写children.sort()就会报错
 	</script>
 
 </body>
