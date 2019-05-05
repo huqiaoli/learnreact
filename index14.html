@@ -13,6 +13,7 @@
 
 	<div id="root"></div>
 	<script type="text/babel">
+	//一个简单的区分方法，this.props 表示那些一旦定义，就不再改变的特性，而 this.state 是会随着用户互动而产生变化的特性
 	//在应用中组合使用 state 和 props
 	//可以在父组件中设置 state， 并通过在子组件上使用 props 将其传递到子组件上。在 render 函数中, 我们设置 name 和 site 来获取父组件传递过来的数据
 	class WebSite extends React.Component{
