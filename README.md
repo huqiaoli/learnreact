@@ -78,8 +78,30 @@ ReactDOM.render(
 
 - 在标签内部的注释需要花括号{}括住；
 - 在标签外的注释不使用花括号{}；
+## 5.组件的生命周期
+组件的生命周期分成三个状态：
+- Mounting：已插入真实 DOM
+- Updating：正在被重新渲染
+- Unmounting：已移出真实 DOM
+ 
+React 为每个状态都提供了两种处理函数，will 函数在进入状态之前调用，did 函数在进入状态之后调用，三种状态共计五种处理函数。
 
-## 5.组件 & Props
+```
+componentWillMount()//只会在装载之前调用一次，在 render 之前调用，你可以在这个方法里面调用 setState 改变状态，并且不会导致额外调用一次 render
+componentDidMount()//只会在装载完成之后调用一次，在 render 之后调用，从这里开始可以通过 ReactDOM.findDOMNode(this) 获取到组件的 DOM 节点
+componentWillUpdate(object nextProps, object nextState)//更新组件触发
+componentDidUpdate(object prevProps, object prevState)//更新组件触发
+componentWillUnmount()//卸载组件触发
+```
+
+此外，React 还提供两种特殊状态的处理函数
+
+```
+componentWillReceiveProps(object nextProps)//已加载组件收到新的参数时调用
+shouldComponentUpdate(object nextProps, object nextState)//组件判断是否重新渲染时调用
+```
+
+## 6.组件 & Props
 - 定义一个组件最简单的方式是使用js函数，之所以称这种类型的组件为函数定义组件
 - 从概念上看组件就像是函数，它可以接收任意的输入值（称之为“props”），并返回一个需要在页面上展示的React元素；
 - 也可以使用 ES6 class 来定义一个组件
@@ -111,7 +133,7 @@ ReactDOM.render(
 	  
 5、添加组件属性，有一个地方需要注意，就是 class 属性需要写成 className ，for 属性需要写成 htmlFor
 
-## 6.this.props.children
+## 7.this.props.children
 为什么用React.Children.map(props.children, () => )而不是props.children.map(() => )
 
 不能保证props.children将是一个数组。当children不是数组时，使用children.map会引发错误
@@ -133,7 +155,7 @@ props.children如果有多个子元素（如此），则React只会生成一个�
 ```
 React.Children提供了处理this.props.children的实用程序，如果children是一个键控片段或数组，它将被遍历。他的实现似乎比使用的Array.prototype.map（数组）更多
 
-## 7.状态state
+## 8.状态state
 - 构造函数是唯一能够初始化 this.state 的地方；
 ##### 1、不要直接更新状态
 例如，此代码不会重新渲染组件：
@@ -216,7 +238,7 @@ componentDidMount() {
 - Props是组件实例的标签属性的集合；它可以接收组件外传进来的值，在组件内部是不可修改Props的属性的，在组件外部可以通过标签属性给它赋值，所以可以用来从组件外部给组件内部传值；
 - State是组件实例的内部数据的集合；在组件内部是可以更改State的属性的值，且每次更改后，都会触发render方法渲染组件；
 - 组件的标签属性在使用前不用先定义；而组件的内部数据State的属性在使用前需要先通过getInitialState方法定义；
-## 8.事件处理
+## 9.事件处理
 - React事件绑定属性的命名采用驼峰式写法，而不是小写。
 - 如果采用 JSX 的语法，则需要传入一个函数作为事件处理函数，而不是一个字符串(DOM元素的写法)；
 - 不能使用返回 false 的方式阻止默认行为，必须明确的使用 preventDefault 来阻止默认行为；
@@ -257,7 +279,7 @@ this.handleClick = this.handleClick.bind(this);
 
 函数：**handleclick(传过来的参数，event)**
 
-## 9.条件渲染
+## 10.条件渲染
 ###### 通过条件渲染页面：
 
 首先建一个函数，来根据不同的情况返回不同的值，然后建一个类组建，先进行变量的初始化，对变量进行操作，在组件内进行小的渲染，最后通过 ReactDOM.render() 渲染到页面上。
@@ -285,7 +307,7 @@ this.setState((prevState, props) => ({
     //do something here
 }));
 ```
-##  10.key
+##  11.key
 ###### key的使用需要注意一下几点：
 - 数组中的每一项都要有固定的key，以便React区分哪些元素变化(增加/修改/移除),它只是作为React自己识别，并不会传递到组件上
 - 一个array创建的elements列表中，item的key应该是独一无二的。
@@ -294,7 +316,7 @@ this.setState((prevState, props) => ({
 - key需要在列表范围内保证唯一性：同一个数组中的key需要保证唯一性，但不同数组中的key无所谓
 - key不会作为props传入组件：可以认为key是React在JSX中的保留字，你不能用它来向组件传递数据而应该改用其他词
 
-## 11.表单
+## 12.表单
 ##### 状态属性
 表单元素有这么几种属于状态的属性：
 - value，对应 <input> 和 <textarea> 所有
@@ -358,9 +380,9 @@ handleChange: function(event) {
 ```
 你可以通过传递一个数组指定多个选中项：<select multiple={true} value={['B', 'C']}>
 
-## 12.状态提升
+## 13.状态提升
 React中的状态提升概括来说,就是将多个组件需要共享的状态提升到它们最近的父组件上.在父组件上改变这个状态然后通过props分发给子组件.
-## 13.组合 vs 继承
+## 14.组合 vs 继承
 在 JSX 中，开始标签和结束标签之间的子代内容会作为props.children传递；开始标签和结束标签之间可以是任何类型的东西，只要该组件在 React 渲染前能将其转换成 React 能够理解的东西即可；
 例如，可以传递如下类型的子代：
 
