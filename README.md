@@ -12,6 +12,19 @@ ReactDom.render接受两个参数，第一个是要被插入的内容，第二�
 - 因为 JSX 的特性更接近 js 而不是 HTML , 所以 XML 使用 camelCase 小驼峰命名 来定义属性的名称，而不是使用 HTML 的属性名称;例如：class 用 className 代替，而 tabindex 用 tabIndex 代替；
 
 ## 3.react样式、类使用
+##### react向元素内，动态添加style
+
+例如：有一个DIV元素， 需要动态添加一个 display:block | none 样式， 那么：
+
+```
+<div style={{display: (index===this.state.currentIndex) ? "block" : "none"}}>此标签是否隐藏</div>
+```
+或者， 多个样式写法：
+
+```
+<div style={{display: (index===this.state.currentIndex) ? "block" : "none", color:"red"}}>此标签是否隐藏</div>
+```
+
 ##### className 引入多个类
 
 ```
