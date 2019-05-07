@@ -20,7 +20,7 @@
     }
     render(){
       return (
-            <h1>
+            <h1 style = {{display:(this.state.isShow) ? "block" : "none"}}>{/*react向元素内，动态添加style*/}
                 hello world!
                 { this.state.isShow ? <span>123</span>:<span>456</span> }
             </h1>
