@@ -13,10 +13,15 @@
 
 	<div id="root"></div>
 	<script type="text/babel">
+	/*
+	jsx标签支持属性设置，基本使用和html/XML类似
+	在标签上添加属性名=属性值，值必须使用""包含
+	值是可以接收插值表达式的
+	*/
 	// 用引号形式，这里的”0”是一个字符串字面量
 	const element=<div tabIndex='0'></div>
 	// 用表达式，并且表达式用花括号包裹
-	const elementImg=<img src='user.avatarUrl'/>
+	const elementImg=<img src={user.avatarUrl}/>
 
 	//JSX表示对象，JSX 语法的解析规则是：遇到 XML 标签 <...>，以 XML 规则解析；遇到代码块 {...}，就用 js 规则解析；
     //在JSX中，XML可以理解为是创建虚拟DOM对象的字面量写法；在编译之后呢，XML标签 会被转化为 React.createElement() 函数的调用；
