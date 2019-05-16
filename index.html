@@ -13,9 +13,21 @@
 
 	<div id="example"></div>
 	<script type="text/babel">
+	//type="text/babel"：浏览器不会解析这里的代码，babel就会读取到这里的内容，并进行解析，然后生成浏览器可识别的js代码
+	/*
+	ReactDOM.render(要渲染的内容，放置内容的容器)
+	ReactDOM:React框架提供的一个对象
+	容器不能是body
+	JSX:
+		Javascript+XML
+		基于Javascript的语言，融合了XML，可以再js中写xml
+	xml：可扩展（自定义）标记语言
+	*/
 		const element=<h1>hello,world</h1>
 		ReactDOM.render(
+			//'<h2>Hello,world!</h2>'//这里的内容不会作为html进行解析，只会作为字符串内容
 			<h2>Hello,world!</h2>,
+			//document.body
 			document.getElementById('example')
 		);
 	</script>
