@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<title>更新元素渲染</title>
+	<title>更新元素渲染/函数类定义组件渲染</title>
 	<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
 	<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
 	<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
@@ -30,7 +30,7 @@
 		)
 	}
 	setInterval(tick,1000)
-//除了函数外我们还可以创建一个 React.Component 的 ES6 类，该类封装了要展示的元素，需要注意的是在 render() 方法中，需要使用 this.props 替换 props
+	//除了函数外我们还可以创建一个 React.Component 的 ES6 类，该类封装了要展示的元素，需要注意的是在 render() 方法中，需要使用 this.props 替换 props
 	class Clocks extends React.Component{
 		render(){
 			return(
@@ -48,6 +48,63 @@
 		)
 	}
 	setInterval(ticks,1000)
+
+		
+	var names = ['Alice', 'Emily', 'Kate'];
+	var name2 = ['Alices', 'Emilys', 'Kates'];//name一些标识符是保留关键字，不能用作变量名或函数名
+	//函数封装
+	// function List(data){
+	// 	return data.map((item,index) => {
+	// 		return <li key={index}>{item}</li>
+	// 	})
+	// }
+
+
+	/*组件：拥有独立功能的一个模块
+	React还提供组件的另外一种使用的方式：标签化 <List />
+	标签化：传参是通过标签属性传入的 <List data={names} a="1"/>
+	*/
+	function List(props){
+				/**
+				 * props:接受来自标签上的所有属性
+				 *     props = {
+				 *         data: users,
+				 *         a: '1'
+				 *     }
+				 */
+		return props.data.map((item,index) => {
+			return <li key={index}>{item}</li>
+		})
+	}
+	//用类实现组件
+	/**
+			 * 如果使用类实现组件，那么需要继承一个父类：React.Component
+			 * 组件类必须实现一个render()的方法
+			 * props：传入的参数必须是用对象下的一个属性props来接收
+			 */
+	class List extends React.Component {
+
+	render() {
+		return this.props.data.map( (item, index) => {
+			return <li key={index}>{item}</li>
+		} )
+	}
+
+	}
+
+	ReactDOM.render(
+		<div>
+			<ul>
+				{/*List(names)*/}{/*函数调用*/}
+				<List data={names} a="1"/>{/*标签化 属性传参*/}
+			</ul>
+			<ul>
+				{/*List(name2)*/}
+				<List data={name2}/>
+			</ul>
+		</div>,
+		document.getElementById('root')
+	)
 	</script>
 
 </body>
