@@ -33,6 +33,7 @@
     <div id="app"></div>
 
     <script type="text/babel">
+        //渲染整个列表
         class List extends React.Component {
             render(){
                 return(
@@ -58,6 +59,8 @@
         （无论有没有constructor，在render中this.props都是可以使用的，这是React自动附带的；）
         如果没用到constructor,是可以不写的；React会默认添加一个空的constructor。
         */
+
+        //添加状态 点击的时候切换状态，控制单个列表的显示隐藏
         class Group extends React.Component {
             constructor(){
                 super(...arguments);
@@ -79,6 +82,7 @@
                 )
             }
         }
+        //初始化时，在父级上控制默认列表展开隐藏（状态一旦改变就会重新渲染render）
         class Panel extends React.Component {
             constructor(){
                 super(...arguments);
