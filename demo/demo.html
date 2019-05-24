@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>划分组件层级及state切换</title>
     <script src="js/react.development.js"></script>
     <script src="js/react-dom.development.js"></script>
     <script src="js/babel.min.js"></script>
@@ -45,12 +45,13 @@
     </Panel> -->
 
     <script type="text/babel">
+        //渲染整个列表
         class List extends React.Component {
             render(){
                 return(
                     <ul>
                        {
-                           this.props.data.map( (item, index) => {
+                           this.props.data.map( (item, index) => {{/*这里不接受for循环或者if语句,只能接受表达式*/}
                                return (
                                    <li key={index}>
                                        <p className={item.vip ? "vip" : ""}>{item.username}</p>
@@ -63,32 +64,61 @@
                 )
             }
         }
+        /*
+        super(props)--super()--以及不写super的区别
+        如果你用到了constructor就必须写super(),是用来初始化this的，可以绑定事件到this上;
+        如果你在constructor中要使用this.props,就必须给super加参数：super(props)；
+        （无论有没有constructor，在render中this.props都是可以使用的，这是React自动附带的；）
+        如果没用到constructor,是可以不写的；React会默认添加一个空的constructor。
+        */
+
+        //添加状态 点击的时候切换状态，控制单个列表的显示隐藏
         class Group extends React.Component {
+            constructor(){
+                super(...arguments);
+                this.state = {
+                    show:this.props.show
+                };
+            }
+            changeList(){
+                this.setState({
+                    show: !this.state.show
+                });
+            }
             render(){
                 return(
                     <div>
-                        <h2 className="title">{this.props.data.name}</h2>
-                        <List data={this.props.data.list} />
+                        <h2 className="title" onClick={this.changeList.bind(this)}>{this.props.data.name}</h2>
+                        {this.state.show ? <List data={this.props.data.list} /> : ''}
                     </div>
                 )
             }
         }
+        //初始化时，在父级上控制默认列表展开隐藏（状态一旦改变就会重新渲染render）
         class Panel extends React.Component {
+            constructor(){
+                super(...arguments);
+                this.state = {
+                    showList:[true,false,false]//初始化时,定义状态
+                }
+            }
+            setShow(){
+                var list = Object.keys(dataList).map((key,index) => {
+                    //console.log(this.props.data[key])//this.props.data[key]是一个对象,key就是属性的名称,通过属性的名称取到属性的值this.props.data[key]
+                    return <Group data={dataList[key]} key={index} show={this.state.showList[index]}/>
+                });
+                return list;
+            }
             render(){
                 return(
                     <div className="panel">
-                        {
-                            Object.keys(this.props.data).map((key,index) => {
-                                console.log(this.props.data[key])//this.props.data[key]是一个对象,key就是属性的名称,通过属性的名称取到属性的值this.props.data[key]
-                                return <Group data={this.props.data[key]} key={index} />
-                            })
-                        }
+                        {this.setShow()}
                     </div>
                 )
             }
         }
         ReactDOM.render(
-            <Panel data={dataList} />,
+            <Panel />,
             document.getElementById('app')
         )
     </script>
